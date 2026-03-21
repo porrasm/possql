@@ -77,5 +77,13 @@ export default defineConfig(
       "prefer-template": "error",
     },
   },
+  {
+    files: ["tests/**/*.ts"],
+    rules: {
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "no-console": "off",
+    },
+  },
   globalIgnores(["dist/", "node_modules/"]),
 );

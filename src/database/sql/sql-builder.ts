@@ -1,6 +1,9 @@
 import type { SqlParameter, SQLDefinition, TemplateQuery } from "../types";
 
-const assertDefined = <T>(value: T | undefined | null, errorMessage: string): T => {
+const assertDefined = <T>(
+  value: T | undefined | null,
+  errorMessage: string,
+): T => {
   if (value === undefined || value === null) {
     throw new Error(errorMessage);
   }
@@ -27,10 +30,13 @@ class SqlDefinitionBuilder {
     this.currentQueryPart += sql;
   }
 
-  public appendSubQuery({ templateSqlQuery, sqlParameters }: SQLDefinition): void {
+  public appendSubQuery({
+    templateSqlQuery,
+    sqlParameters,
+  }: SQLDefinition): void {
     for (let i = 0; i < templateSqlQuery.length; i++) {
       this.appendRawSql(
-        assertDefined(templateSqlQuery[i], "Template SQL query is undefined")
+        assertDefined(templateSqlQuery[i], "Template SQL query is undefined"),
       );
       if (i >= sqlParameters.length) {
         continue;
@@ -69,7 +75,7 @@ class SqlDefinitionBuilder {
 
 const combineQueryAndParameters = (
   templateQueryParts: string[],
-  sqlParameters: SqlParameter[]
+  sqlParameters: SqlParameter[],
 ): SQLDefinition => {
   if (templateQueryParts.length !== sqlParameters.length + 1) {
     throw new Error("Template query parts and SQL parameters count mismatch");
@@ -86,7 +92,7 @@ const combineQueryAndParameters = (
 
 const generateSqlDefinition = (
   templateQuery: TemplateQuery,
-  sqlParameters: SqlParameter[]
+  sqlParameters: SqlParameter[],
 ): SQLDefinition => {
   if (typeof templateQuery === "string") {
     return {
@@ -103,7 +109,25 @@ export const sql = (
   templateQueryRaw: TemplateStringsArray,
   ...sqlParametersRaw: SqlParameter[]
 ): SQLDefinition => {
-  const templateQuery = templateQuerySchema.parse(templateQueryRaw);
-  const sqlParameters = sqlParameterSchema.array().parse(sqlParametersRaw);
+  const templateQuery = templateQuerySchema.parse(templateQueryRaw, {
+    error: (error) => {
+      return {
+        message: "Invalid template query",
+        path: [],
+        code: "invalid_template_query",
+        cause: error,
+      };
+    },
+  });
+  const sqlParameters = sqlParameterSchema.array().parse(sqlParametersRaw, {
+    error: (error) => {
+      return {
+        message: "Invalid SQL parameters",
+        path: [],
+        code: "invalid_sql_parameters",
+        cause: error,
+      };
+    },
+  });
   return generateSqlDefinition(templateQuery, sqlParameters);
 };

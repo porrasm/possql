@@ -13,7 +13,15 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src"
+    "lint": "eslint src tests",
+    "test": "vitest run --config tests/vitest.config.ts",
+    "test:watch": "vitest --config tests/vitest.config.ts",
+    "test:unit": "vitest run --config tests/vitest.config.ts tests/unit",
+    "test:integration": "vitest run --config tests/vitest.config.ts tests/integration",
+    "test:coverage": "vitest run --config tests/vitest.config.ts --coverage",
+    "db:up": "docker compose -f tests/docker/docker-compose.yml up -d --wait",
+    "db:down": "docker compose -f tests/docker/docker-compose.yml down -v",
+    "typecheck:tests": "tsc --noEmit -p tests/tsconfig.json"
   },
   "dependencies": {
     "sql-template-strings": ">=2.2.2",
@@ -26,9 +34,12 @@
     "@eslint/js": "^10.0.1",
     "@types/node": "^20",
     "@types/pg": "^8",
+    "@vitest/coverage-v8": "^4.1.0",
     "eslint": "^10.0.3",
     "pg": "^8",
+    "tsx": "^4.21.0",
     "typescript": "^5",
-    "typescript-eslint": "^8.57.0"
+    "typescript-eslint": "^8.57.0",
+    "vitest": "^4.1.0"
   }
 }

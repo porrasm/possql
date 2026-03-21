@@ -44,7 +44,7 @@ const generateTableSchema = (table: TableToGenerate): string => {
       ${table.columns.map((column) => `${config().columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config().primaryKeySuffix}Schema` : column.zodTypeWithoutNullable},`).join("\n")}
     },
     validator: z.object({
-      ${table.columns.map((column) => `${config().columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config().primaryKeySuffix}Schema` : column.zodTypeWithoutNullable},`).join("\n")}
+      ${table.columns.map((column) => `${config().columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config().primaryKeySuffix}Schema` : column.zodType},`).join("\n")}
     }).strict(),
     notNullValidator: z.object({
       ${table.columns.map((column) => `${config().columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config().primaryKeySuffix}Schema` : column.zodTypeWithoutNullable},`).join("\n")}
