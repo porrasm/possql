@@ -7,10 +7,10 @@ import type {
 } from "./types";
 import { z } from "zod";
 
-type OperationParams<R> = {
+interface OperationParams<R> {
   sql: SQLDefinition;
   validator: DBValidator<R>;
-};
+}
 
 type SQLOrPreparer<Args> = SQLPreparer<Args> | SQLDefinition;
 

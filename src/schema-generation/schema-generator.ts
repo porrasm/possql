@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { createDatabase, type Database } from "../database/db-definition";
 import { z } from "zod";
 import { parsePublicSchema, publicSchemaValidator } from "./table-parser";
@@ -6,7 +7,10 @@ import fs from "fs";
 import { execSync } from "child_process";
 import type { PoolLike } from "../database/external-types";
 import { sql } from "../database/sql/sql-builder";
-import { SchemaGenerationConfig, setConfig } from "./schema-generation-config";
+import {
+  type SchemaGenerationConfig,
+  setConfig,
+} from "./schema-generation-config";
 
 const foreignKeyValidator = z.object({
   table_name: z.string(),
@@ -17,7 +21,7 @@ const foreignKeyValidator = z.object({
 
 export type ForeignKey = z.infer<typeof foreignKeyValidator>;
 
-const runPrettierOnSchemaFile = async (outputTypescriptFile: string) => {
+const runPrettierOnSchemaFile = (outputTypescriptFile: string): void => {
   try {
     console.log("Running prettier on generated schema file...");
     execSync(`npx prettier --write ${outputTypescriptFile}`, {
@@ -31,13 +35,13 @@ const runPrettierOnSchemaFile = async (outputTypescriptFile: string) => {
   }
 };
 
-type SchemaGenerationParams = {
+interface SchemaGenerationParams {
   pool: PoolLike;
   outputTypescriptFile: string;
   config?: Partial<SchemaGenerationConfig>;
-};
+}
 
-const dbHealthCheck = async (db: Database) => {
+const dbHealthCheck = async (db: Database): Promise<void> => {
   try {
     await db.client.queryOne(sql`SELECT 1`);
   } catch (error) {
@@ -46,7 +50,9 @@ const dbHealthCheck = async (db: Database) => {
   }
 };
 
-export const runSchemaGeneration = async (params: SchemaGenerationParams) => {
+export const runSchemaGeneration = async (
+  params: SchemaGenerationParams,
+): Promise<void> => {
   setConfig(params.config ?? {});
 
   const db = createDatabase({
@@ -83,5 +89,5 @@ export const runSchemaGeneration = async (params: SchemaGenerationParams) => {
   const schemaDefinition = generateSchemaTypescript(tables);
 
   fs.writeFileSync(params.outputTypescriptFile, schemaDefinition);
-  await runPrettierOnSchemaFile(params.outputTypescriptFile);
+  runPrettierOnSchemaFile(params.outputTypescriptFile);
 };

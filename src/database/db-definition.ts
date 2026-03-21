@@ -3,11 +3,11 @@ import { prepareOperation } from "./operations";
 import type { ClientMetadata, DBClient, DbConfig } from "./types";
 import type { PoolLike, PoolClientLike } from "./external-types";
 
-type QueryParams = {
+interface QueryParams {
   getClient: () => Promise<PoolClientLike>;
   useZodValidation: boolean;
   clientMetadata: ClientMetadata;
-};
+}
 
 const createQuery =
   ({
@@ -22,7 +22,8 @@ const createQuery =
       sql,
       clientMetadata,
     });
-    return useZodValidation ? validator.array().parse(rows) : rows;
+    // rows is unknown[] from pg driver — zod validates at runtime, or caller accepts the trust boundary
+    return useZodValidation ? validator.array().parse(rows) : rows as never;
   };
 
 const createQueryOneOrNone =
@@ -38,11 +39,11 @@ const createQueryOneOrNone =
       sql,
       clientMetadata,
     });
-    const firstRow = rows[0] ?? null;
+    const firstRow: unknown = rows[0];
     if (!firstRow) {
       return null;
     }
-    return useZodValidation ? validator.parse(firstRow) : firstRow;
+    return useZodValidation ? validator.parse(firstRow) : firstRow as never;
   };
 
 const createQueryOne =
@@ -58,11 +59,11 @@ const createQueryOne =
       sql,
       clientMetadata,
     });
-    const firstRow = rows[0];
+    const firstRow: unknown = rows[0];
     if (firstRow === undefined) {
       throw new Error("Query returned undefined");
     }
-    return useZodValidation ? validator.parse(firstRow) : firstRow;
+    return useZodValidation ? validator.parse(firstRow) : firstRow as never;
   };
 
 const createNonQuery =
@@ -112,11 +113,11 @@ const createTransact =
     return runUsingTransaction(client, () => op(opClient));
   };
 
-export type Database = {
+export interface Database {
   client: DBClient;
   transact: ReturnType<typeof createTransact>;
   pool: PoolLike;
-};
+}
 
 export const createDatabase = (config: DbConfig): Database => {
   const clientMetadata: ClientMetadata = {

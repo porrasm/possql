@@ -8,12 +8,12 @@ const header = `
 import { z } from "zod";
 `.trim();
 
-const schemaHeader = () =>
+const schemaHeader = (): string =>
   `
 export const ${config().schemaExportName} = {
 `.trim();
 
-const footer = () =>
+const footer = (): string =>
   `
 };
 
@@ -32,7 +32,7 @@ export const rowTypes: RowTypes = Object.fromEntries(
 ) as unknown as RowTypes;
 `.trim();
 
-const generateTableSchema = (table: TableToGenerate) => {
+const generateTableSchema = (table: TableToGenerate): string => {
   const transformedTableName = config().tableNameTransform(table.name);
   return `
   ${transformedTableName}: {
@@ -53,7 +53,7 @@ const generateTableSchema = (table: TableToGenerate) => {
   `.trim();
 };
 
-const generateRowTypeExports = (tables: TableToGenerate[]) => {
+const generateRowTypeExports = (tables: TableToGenerate[]): string => {
   return `
   ${tables
     .map((table) => {
@@ -64,7 +64,7 @@ const generateRowTypeExports = (tables: TableToGenerate[]) => {
   `.trim();
 };
 
-const generateTableId = (table: TableToGenerate) => {
+const generateTableId = (table: TableToGenerate): string => {
   const idColumn = table.columns.find(
     (column) => column.name === `${table.name}_id`,
   );
@@ -79,7 +79,7 @@ const generateTableId = (table: TableToGenerate) => {
   `;
 };
 
-const generateTableTypeExport = (table: TableToGenerate) => {
+const generateTableTypeExport = (table: TableToGenerate): string => {
   const transformedTableName = config().tableNameTransform(table.name);
   return `
   export type ${transformedTableName}${config().tableTypeSuffix} = z.infer<typeof ${config().schemaExportName}.${transformedTableName}.validator>;
@@ -87,7 +87,7 @@ const generateTableTypeExport = (table: TableToGenerate) => {
   `;
 };
 
-export const generateSchemaTypescript = (tables: TableToGenerate[]) => {
+export const generateSchemaTypescript = (tables: TableToGenerate[]): string => {
   return `
   ${header}
   ${tables.map((table) => generateTableId(table)).join("\n")}

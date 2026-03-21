@@ -1,4 +1,4 @@
-export type SchemaGenerationConfig = {
+export interface SchemaGenerationConfig {
   schemaExportName: string;
   primaryKeySuffix: string;
   tableTypeSuffix: string;
@@ -11,7 +11,7 @@ export type SchemaGenerationConfig = {
   getZodArrayTypeMap: (
     defaults: Record<string, string>,
   ) => Record<string, string>;
-};
+}
 
 type PopulatedSchemaGenerationConfig = Omit<
   SchemaGenerationConfig,
@@ -73,18 +73,18 @@ const DEFAULT_SCHEMA_GENERATION_CONFIG: SchemaGenerationConfig = {
   getZodArrayTypeMap: (defaults: Record<string, string>) => defaults,
 };
 
-let populatedSchemaGenerationConfig: PopulatedSchemaGenerationConfig =
-  null as unknown as PopulatedSchemaGenerationConfig;
+let populatedSchemaGenerationConfig: PopulatedSchemaGenerationConfig | null =
+  null;
 
-export const config = () => {
-  if (populatedSchemaGenerationConfig) {
+export const config = (): PopulatedSchemaGenerationConfig => {
+  if (populatedSchemaGenerationConfig !== null) {
     return populatedSchemaGenerationConfig;
   }
 
   throw new Error("Config not initialized");
 };
 
-export const setConfig = (config: Partial<SchemaGenerationConfig>) => {
+export const setConfig = (config: Partial<SchemaGenerationConfig>): void => {
   const ignoredTablesFunc =
     config.getIgnoredTables ??
     DEFAULT_SCHEMA_GENERATION_CONFIG.getIgnoredTables;

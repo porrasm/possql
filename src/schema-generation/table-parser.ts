@@ -2,17 +2,17 @@ import { z } from "zod";
 import type { ForeignKey } from "./schema-generator";
 import { config } from "./schema-generation-config";
 
-export type ColumnToGenerate = {
+export interface ColumnToGenerate {
   name: string;
   isPrimaryKey: boolean;
   zodType: string;
   zodTypeWithoutNullable: string;
-};
+}
 
-export type TableToGenerate = {
+export interface TableToGenerate {
   name: string;
   columns: ColumnToGenerate[];
-};
+}
 
 export const publicSchemaValidator = z.object({
   table_schema: z.string(),
@@ -46,7 +46,7 @@ const parseColumn = (row: PublicSchemaRow): ColumnToGenerate => {
   return {
     name: row.column_name,
     zodType: `${zodType}${suffix}`,
-    zodTypeWithoutNullable: `${zodType}`,
+    zodTypeWithoutNullable: zodType,
     isPrimaryKey: row.column_name === `${row.table_name}_id`,
   };
 };

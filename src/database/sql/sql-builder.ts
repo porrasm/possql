@@ -17,17 +17,17 @@ class SqlDefinitionBuilder {
   private currentQueryPart: string;
   private sqlParameters: SqlParameter[];
 
-  constructor() {
+  public constructor() {
     this.previousQueryParts = [];
     this.currentQueryPart = "";
     this.sqlParameters = [];
   }
 
-  appendRawSql(sql: string) {
+  public appendRawSql(sql: string): void {
     this.currentQueryPart += sql;
   }
 
-  appendSubQuery({ templateSqlQuery, sqlParameters }: SQLDefinition) {
+  public appendSubQuery({ templateSqlQuery, sqlParameters }: SQLDefinition): void {
     for (let i = 0; i < templateSqlQuery.length; i++) {
       this.appendRawSql(
         assertDefined(templateSqlQuery[i], "Template SQL query is undefined")
@@ -36,7 +36,7 @@ class SqlDefinitionBuilder {
         continue;
       }
 
-      const parameter = sqlParameters[i];
+      const parameter: unknown = sqlParameters[i];
 
       // Null values are allowed here so we check for undefined only
       if (parameter === undefined) {
@@ -48,18 +48,18 @@ class SqlDefinitionBuilder {
       if (subQueryParameter.success) {
         this.appendSubQuery(subQueryParameter.data);
       } else {
-        this.appendSqlParameter(parameter);
+        this.appendSqlParameter(sqlParameterSchema.parse(parameter));
       }
     }
   }
 
-  appendSqlParameter(sqlParameter: SqlParameter) {
+  public appendSqlParameter(sqlParameter: SqlParameter): void {
     this.previousQueryParts.push(this.currentQueryPart);
     this.currentQueryPart = "";
     this.sqlParameters.push(sqlParameter);
   }
 
-  build(): SQLDefinition {
+  public build(): SQLDefinition {
     return {
       templateSqlQuery: [...this.previousQueryParts, this.currentQueryPart],
       sqlParameters: this.sqlParameters,

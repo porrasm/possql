@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 import pg from "pg";
 import { runSchemaGeneration } from "./schema-generation/schema-generator";
 
@@ -12,12 +13,18 @@ Options:
   --help                      Show this help message
 `.trim();
 
-const parseArgs = (argv: string[]) => {
+const parseArgs = (
+  argv: string[],
+): {
+  connectionString: string;
+  output: string;
+  schemaName: string | undefined;
+} => {
   const args = argv.slice(2);
 
   if (args[0] !== "generate-schema") {
     console.error(`Unknown command: ${args[0] ?? "(none)"}`);
-    console.error('Available commands: generate-schema');
+    console.error("Available commands: generate-schema");
     process.exit(1);
   }
 
@@ -53,7 +60,7 @@ const parseArgs = (argv: string[]) => {
   };
 };
 
-const main = async () => {
+const main = async (): Promise<void> => {
   const { connectionString, output, schemaName } = parseArgs(process.argv);
 
   const pool = new pg.Pool({ connectionString });
@@ -67,7 +74,7 @@ const main = async () => {
   process.exit(0);
 };
 
-main().catch((err) => {
+main().catch((err: unknown) => {
   console.error(err);
   process.exit(1);
 });

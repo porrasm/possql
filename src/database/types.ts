@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { type z } from "zod";
 import type {
   templateQuerySchema,
   sqlDefinitionSchema,
@@ -10,15 +10,15 @@ export type TemplateQuery = z.infer<typeof templateQuerySchema>;
 export type SQLDefinition = z.infer<typeof sqlDefinitionSchema>;
 export type SqlParameter = z.infer<typeof sqlParameterSchema>;
 
-export type DBValidator<T> = z.Schema<T>;
+export type DBValidator<T> = z.ZodType<T>;
 
 export type SQLPreparer<Args> = (args: Args) => SQLDefinition;
 
-export type PreparedOperation<Args, R> = {
+export interface PreparedOperation<Args, R> {
   args: Args;
   validator: DBValidator<R>;
   prepareSql: SQLPreparer<Args>;
-};
+}
 
 export type OperationBuilder<Args, R> = (
   args: Args,
@@ -34,22 +34,22 @@ export type QueryParams<Args, R> =
   | [SQLDefinition, DBValidator<R>]
   | [PreparedOperation<Args, R>];
 
-export type ClientMetadata = {
+export interface ClientMetadata {
   type: "normal" | "transaction";
-};
+}
 
-export type DBClient = {
+export interface DBClient {
   query: <Args, R>(...args: QueryParams<Args, R>) => Promise<R[]>;
   queryOneOrNone: <Args, R>(...args: QueryParams<Args, R>) => Promise<R | null>;
   queryOne: <Args, R>(...args: QueryParams<Args, R>) => Promise<R>;
   nonQuery: <Args>(...args: QueryParams<Args, void>) => Promise<void>;
   clientMetadata: ClientMetadata;
-};
+}
 
-export type DbConfig = {
+export interface DbConfig {
   pool: PoolLike;
   /** If true, the database query result will be validated using zod.
    * For production, this can be disabled to improve performance. */
   useZodValidation: boolean;
-};
+}
 
