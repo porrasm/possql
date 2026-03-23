@@ -3,7 +3,7 @@ import { z } from "zod";
 import pg from "pg";
 import { sql } from "../../src/database/sql/sql-builder";
 import { createDatabase } from "../../src/database/db-definition";
-import { setupTestDb, type TestDb } from "../helpers/db";
+import { setupTestDb, resetDb, type TestDb } from "../helpers/db";
 
 const userSchema = z.object({
   user_id: z.number(),
@@ -22,7 +22,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  await testDb.cleanup();
+  await resetDb(testDb);
 });
 
 describe("Zod validation", () => {

@@ -4,59 +4,16 @@ import path from "path";
 import fs from "fs";
 import pg from "pg";
 import { runSchemaGeneration } from "../../src/schema-generation/schema-generator";
+import { setupPublicSchemaTest, resetDb } from "../helpers/db";
 
-const TEST_DATABASE_URL =
-  process.env.TEST_DATABASE_URL ??
-  "postgresql://pgtest:pgtest@localhost:5433/pg_db_lib_test";
-
-// Tables in large-schema.sql in drop order (FKs first)
-const LARGE_SCHEMA_TABLES = [
-  "article_tag",
-  "article",
-  "int_array",
-  "text_array",
-  "tag",
-  "setting",
-  "location",
-  "file",
-  "product",
-  "event",
-  "profile",
-  "big_number",
-  "category",
-];
-
-interface SchemaGenTestContext {
-  pool: pg.Pool;
-  cleanup: () => Promise<void>;
-}
-
-async function setupSchemaGenTest(
-  sqlFile: string,
-): Promise<SchemaGenTestContext> {
-  const pool = new pg.Pool({ connectionString: TEST_DATABASE_URL });
-  const sqlContent = fs.readFileSync(path.resolve(sqlFile), "utf8");
-  // Create tables in the public schema
-  await pool.query(sqlContent);
-
-  const cleanup = async (): Promise<void> => {
-    for (const table of LARGE_SCHEMA_TABLES) {
-      await pool.query(`DROP TABLE IF EXISTS "${table}" CASCADE`);
-    }
-    await pool.end();
-  };
-
-  return { pool, cleanup };
-}
-
-let ctx: SchemaGenTestContext;
+let ctx: { pool: pg.Pool };
 
 beforeEach(async () => {
-  ctx = await setupSchemaGenTest("tests/fixtures/large-schema.sql");
+  ctx = await setupPublicSchemaTest("tests/fixtures/large-schema.sql");
 });
 
 afterEach(async () => {
-  await ctx.cleanup();
+  await resetDb(ctx);
 });
 
 describe("runSchemaGeneration", () => {

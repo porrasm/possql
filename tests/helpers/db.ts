@@ -11,8 +11,8 @@ const TEST_DATABASE_URL =
 export interface TestDb {
   db: Database;
   pool: pg.Pool;
+  adminPool: pg.Pool;
   schemaName: string;
-  cleanup: () => Promise<void>;
 }
 
 export async function setupTestDb(
@@ -24,10 +24,10 @@ export async function setupTestDb(
   const suffix = Math.random().toString(36).slice(2, 8);
   const schemaName = `test_${Date.now()}_${suffix}`;
 
-  const pool = new pg.Pool({ connectionString: TEST_DATABASE_URL });
+  const adminPool = new pg.Pool({ connectionString: TEST_DATABASE_URL });
 
   // Create isolated schema and run the fixture SQL inside it
-  const client = await pool.connect();
+  const client = await adminPool.connect();
   try {
     await client.query(`CREATE SCHEMA "${schemaName}"`);
     await client.query(`SET search_path TO "${schemaName}"`);
@@ -39,28 +39,45 @@ export async function setupTestDb(
   }
 
   // Create a pool that sets search_path on every new connection
-  const schemaPool = new pg.Pool({
+  const pool = new pg.Pool({
     connectionString: TEST_DATABASE_URL,
   });
 
   // Patch connect() to set search_path automatically
-  const originalConnect = schemaPool.connect.bind(schemaPool);
-  schemaPool.connect = async (): Promise<pg.PoolClient> => {
+  const originalConnect = pool.connect.bind(pool);
+  pool.connect = async (): Promise<pg.PoolClient> => {
     const c = await originalConnect();
     await c.query(`SET search_path TO "${schemaName}"`);
     return c;
   };
 
   const db = createDatabase({
-    pool: schemaPool,
+    pool,
     useZodValidation: params?.useZodValidation ?? true,
   });
 
-  const cleanup = async (): Promise<void> => {
-    await pool.query(`DROP SCHEMA "${schemaName}" CASCADE`);
-    await pool.end();
-    await schemaPool.end();
-  };
+  return { db, pool, adminPool, schemaName };
+}
 
-  return { db, pool: schemaPool, schemaName, cleanup };
+export async function setupPublicSchemaTest(sqlFile: string): Promise<{ pool: pg.Pool }> {
+  const pool = new pg.Pool({ connectionString: TEST_DATABASE_URL });
+  const sqlContent = fs.readFileSync(path.resolve(sqlFile), "utf8");
+  await pool.query(sqlContent);
+  return { pool };
+}
+
+export async function resetDb(ctx: TestDb | { pool: pg.Pool }): Promise<void> {
+  if ("schemaName" in ctx) {
+    await ctx.adminPool.query(`DROP SCHEMA "${ctx.schemaName}" CASCADE`);
+    await ctx.adminPool.end();
+    await ctx.pool.end();
+  } else {
+    const res = await ctx.pool.query(
+      `SELECT tablename FROM pg_tables WHERE schemaname = 'public'`,
+    );
+    for (const row of res.rows as { tablename: string }[]) {
+      await ctx.pool.query(`DROP TABLE IF EXISTS "${row.tablename}" CASCADE`);
+    }
+    await ctx.pool.end();
+  }
 }
