@@ -1,0 +1,1378 @@
+/* eslint-disable */
+// Generated for testing purposes
+
+import { z } from "zod";
+
+export const actor_idSchema = z.number().int().brand<"actor_id">();
+export type actor_id = z.infer<typeof actor_idSchema>;
+
+export const address_idSchema = z.number().int().brand<"address_id">();
+export type address_id = z.infer<typeof address_idSchema>;
+
+export const category_idSchema = z.number().int().brand<"category_id">();
+export type category_id = z.infer<typeof category_idSchema>;
+
+export const city_idSchema = z.number().int().brand<"city_id">();
+export type city_id = z.infer<typeof city_idSchema>;
+
+export const country_idSchema = z.number().int().brand<"country_id">();
+export type country_id = z.infer<typeof country_idSchema>;
+
+export const customer_idSchema = z.number().int().brand<"customer_id">();
+export type customer_id = z.infer<typeof customer_idSchema>;
+
+export const film_idSchema = z.number().int().brand<"film_id">();
+export type film_id = z.infer<typeof film_idSchema>;
+
+export const inventory_idSchema = z.number().int().brand<"inventory_id">();
+export type inventory_id = z.infer<typeof inventory_idSchema>;
+
+export const language_idSchema = z.number().int().brand<"language_id">();
+export type language_id = z.infer<typeof language_idSchema>;
+
+export const payment_idSchema = z.number().int().brand<"payment_id">();
+export type payment_id = z.infer<typeof payment_idSchema>;
+
+export const rental_idSchema = z.number().int().brand<"rental_id">();
+export type rental_id = z.infer<typeof rental_idSchema>;
+
+export const staff_idSchema = z.number().int().brand<"staff_id">();
+export type staff_id = z.infer<typeof staff_idSchema>;
+
+export const store_idSchema = z.number().int().brand<"store_id">();
+export type store_id = z.infer<typeof store_idSchema>;
+
+export const pagila_schema = {
+  actor: {
+    tableName: "actor",
+    types: {
+      actor_id: actor_idSchema,
+      first_name: z.string(),
+      last_name: z.string(),
+      last_update: z.date(),
+    },
+    notNullTypes: {
+      actor_id: actor_idSchema,
+      first_name: z.string(),
+      last_name: z.string(),
+      last_update: z.date(),
+    },
+    validator: z
+      .object({
+        actor_id: actor_idSchema,
+        first_name: z.string(),
+        last_name: z.string(),
+        last_update: z.date(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        actor_id: actor_idSchema,
+        first_name: z.string(),
+        last_name: z.string(),
+        last_update: z.date(),
+      })
+      .strict(),
+  },
+  actor_info: {
+    tableName: "actor_info",
+    types: {
+      actor_id: z.number().int().nullable(),
+      film_info: z.string().nullable(),
+      first_name: z.string().nullable(),
+      last_name: z.string().nullable(),
+    },
+    notNullTypes: {
+      actor_id: z.number().int(),
+      film_info: z.string(),
+      first_name: z.string(),
+      last_name: z.string(),
+    },
+    validator: z
+      .object({
+        actor_id: z.number().int().nullable(),
+        film_info: z.string().nullable(),
+        first_name: z.string().nullable(),
+        last_name: z.string().nullable(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        actor_id: z.number().int(),
+        film_info: z.string(),
+        first_name: z.string(),
+        last_name: z.string(),
+      })
+      .strict(),
+  },
+  address: {
+    tableName: "address",
+    types: {
+      address: z.string(),
+      address_id: address_idSchema,
+      address2: z.string().nullable(),
+      city_id: city_idSchema,
+      district: z.string(),
+      last_update: z.date(),
+      phone: z.string(),
+      postal_code: z.string().nullable(),
+    },
+    notNullTypes: {
+      address: z.string(),
+      address_id: address_idSchema,
+      address2: z.string(),
+      city_id: city_idSchema,
+      district: z.string(),
+      last_update: z.date(),
+      phone: z.string(),
+      postal_code: z.string(),
+    },
+    validator: z
+      .object({
+        address: z.string(),
+        address_id: address_idSchema,
+        address2: z.string().nullable(),
+        city_id: city_idSchema,
+        district: z.string(),
+        last_update: z.date(),
+        phone: z.string(),
+        postal_code: z.string().nullable(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        address: z.string(),
+        address_id: address_idSchema,
+        address2: z.string(),
+        city_id: city_idSchema,
+        district: z.string(),
+        last_update: z.date(),
+        phone: z.string(),
+        postal_code: z.string(),
+      })
+      .strict(),
+  },
+  category: {
+    tableName: "category",
+    types: {
+      category_id: category_idSchema,
+      last_update: z.date(),
+      name: z.string(),
+    },
+    notNullTypes: {
+      category_id: category_idSchema,
+      last_update: z.date(),
+      name: z.string(),
+    },
+    validator: z
+      .object({
+        category_id: category_idSchema,
+        last_update: z.date(),
+        name: z.string(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        category_id: category_idSchema,
+        last_update: z.date(),
+        name: z.string(),
+      })
+      .strict(),
+  },
+  city: {
+    tableName: "city",
+    types: {
+      city: z.string(),
+      city_id: city_idSchema,
+      country_id: country_idSchema,
+      last_update: z.date(),
+    },
+    notNullTypes: {
+      city: z.string(),
+      city_id: city_idSchema,
+      country_id: country_idSchema,
+      last_update: z.date(),
+    },
+    validator: z
+      .object({
+        city: z.string(),
+        city_id: city_idSchema,
+        country_id: country_idSchema,
+        last_update: z.date(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        city: z.string(),
+        city_id: city_idSchema,
+        country_id: country_idSchema,
+        last_update: z.date(),
+      })
+      .strict(),
+  },
+  country: {
+    tableName: "country",
+    types: {
+      country: z.string(),
+      country_id: country_idSchema,
+      last_update: z.date(),
+    },
+    notNullTypes: {
+      country: z.string(),
+      country_id: country_idSchema,
+      last_update: z.date(),
+    },
+    validator: z
+      .object({
+        country: z.string(),
+        country_id: country_idSchema,
+        last_update: z.date(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        country: z.string(),
+        country_id: country_idSchema,
+        last_update: z.date(),
+      })
+      .strict(),
+  },
+  customer: {
+    tableName: "customer",
+    types: {
+      active: z.number().int().nullable(),
+      activebool: z.boolean(),
+      address_id: address_idSchema,
+      create_date: z.date(),
+      customer_id: customer_idSchema,
+      email: z.string().nullable(),
+      first_name: z.string(),
+      last_name: z.string(),
+      last_update: z.date().nullable(),
+      store_id: store_idSchema,
+    },
+    notNullTypes: {
+      active: z.number().int(),
+      activebool: z.boolean(),
+      address_id: address_idSchema,
+      create_date: z.date(),
+      customer_id: customer_idSchema,
+      email: z.string(),
+      first_name: z.string(),
+      last_name: z.string(),
+      last_update: z.date(),
+      store_id: store_idSchema,
+    },
+    validator: z
+      .object({
+        active: z.number().int().nullable(),
+        activebool: z.boolean(),
+        address_id: address_idSchema,
+        create_date: z.date(),
+        customer_id: customer_idSchema,
+        email: z.string().nullable(),
+        first_name: z.string(),
+        last_name: z.string(),
+        last_update: z.date().nullable(),
+        store_id: store_idSchema,
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        active: z.number().int(),
+        activebool: z.boolean(),
+        address_id: address_idSchema,
+        create_date: z.date(),
+        customer_id: customer_idSchema,
+        email: z.string(),
+        first_name: z.string(),
+        last_name: z.string(),
+        last_update: z.date(),
+        store_id: store_idSchema,
+      })
+      .strict(),
+  },
+  customer_list: {
+    tableName: "customer_list",
+    types: {
+      address: z.string().nullable(),
+      city: z.string().nullable(),
+      country: z.string().nullable(),
+      id: z.number().int().nullable(),
+      name: z.string().nullable(),
+      notes: z.string().nullable(),
+      phone: z.string().nullable(),
+      sid: z.number().int().nullable(),
+      zip_code: z.string().nullable(),
+    },
+    notNullTypes: {
+      address: z.string(),
+      city: z.string(),
+      country: z.string(),
+      id: z.number().int(),
+      name: z.string(),
+      notes: z.string(),
+      phone: z.string(),
+      sid: z.number().int(),
+      zip_code: z.string(),
+    },
+    validator: z
+      .object({
+        address: z.string().nullable(),
+        city: z.string().nullable(),
+        country: z.string().nullable(),
+        id: z.number().int().nullable(),
+        name: z.string().nullable(),
+        notes: z.string().nullable(),
+        phone: z.string().nullable(),
+        sid: z.number().int().nullable(),
+        zip_code: z.string().nullable(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        address: z.string(),
+        city: z.string(),
+        country: z.string(),
+        id: z.number().int(),
+        name: z.string(),
+        notes: z.string(),
+        phone: z.string(),
+        sid: z.number().int(),
+        zip_code: z.string(),
+      })
+      .strict(),
+  },
+  film: {
+    tableName: "film",
+    types: {
+      description: z.string().nullable(),
+      film_id: film_idSchema,
+      fulltext: z.any(),
+      language_id: language_idSchema,
+      last_update: z.date(),
+      length: z.any(),
+      original_language_id: language_idSchema.nullable(),
+      rating: z.any(),
+      release_year: z.number().int().nullable(),
+      rental_duration: z.any(),
+      rental_rate: z.number(),
+      replacement_cost: z.number(),
+      special_features: z.array(z.string()).nullable(),
+      title: z.string(),
+    },
+    notNullTypes: {
+      description: z.string(),
+      film_id: film_idSchema,
+      fulltext: z.any(),
+      language_id: language_idSchema,
+      last_update: z.date(),
+      length: z.any(),
+      original_language_id: language_idSchema,
+      rating: z.any(),
+      release_year: z.number().int(),
+      rental_duration: z.any(),
+      rental_rate: z.number(),
+      replacement_cost: z.number(),
+      special_features: z.array(z.string()),
+      title: z.string(),
+    },
+    validator: z
+      .object({
+        description: z.string().nullable(),
+        film_id: film_idSchema,
+        fulltext: z.any(),
+        language_id: language_idSchema,
+        last_update: z.date(),
+        length: z.any(),
+        original_language_id: language_idSchema.nullable(),
+        rating: z.any(),
+        release_year: z.number().int().nullable(),
+        rental_duration: z.any(),
+        rental_rate: z.number(),
+        replacement_cost: z.number(),
+        special_features: z.array(z.string()).nullable(),
+        title: z.string(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        description: z.string(),
+        film_id: film_idSchema,
+        fulltext: z.any(),
+        language_id: language_idSchema,
+        last_update: z.date(),
+        length: z.any(),
+        original_language_id: language_idSchema,
+        rating: z.any(),
+        release_year: z.number().int(),
+        rental_duration: z.any(),
+        rental_rate: z.number(),
+        replacement_cost: z.number(),
+        special_features: z.array(z.string()),
+        title: z.string(),
+      })
+      .strict(),
+  },
+  film_actor: {
+    tableName: "film_actor",
+    types: {
+      actor_id: actor_idSchema,
+      film_id: film_idSchema,
+      last_update: z.date(),
+    },
+    notNullTypes: {
+      actor_id: actor_idSchema,
+      film_id: film_idSchema,
+      last_update: z.date(),
+    },
+    validator: z
+      .object({
+        actor_id: actor_idSchema,
+        film_id: film_idSchema,
+        last_update: z.date(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        actor_id: actor_idSchema,
+        film_id: film_idSchema,
+        last_update: z.date(),
+      })
+      .strict(),
+  },
+  film_category: {
+    tableName: "film_category",
+    types: {
+      category_id: category_idSchema,
+      film_id: film_idSchema,
+      last_update: z.date(),
+    },
+    notNullTypes: {
+      category_id: category_idSchema,
+      film_id: film_idSchema,
+      last_update: z.date(),
+    },
+    validator: z
+      .object({
+        category_id: category_idSchema,
+        film_id: film_idSchema,
+        last_update: z.date(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        category_id: category_idSchema,
+        film_id: film_idSchema,
+        last_update: z.date(),
+      })
+      .strict(),
+  },
+  film_list: {
+    tableName: "film_list",
+    types: {
+      actors: z.string().nullable(),
+      category: z.string().nullable(),
+      description: z.string().nullable(),
+      fid: z.number().int().nullable(),
+      length: z.any(),
+      price: z.number().nullable(),
+      rating: z.any(),
+      title: z.string().nullable(),
+    },
+    notNullTypes: {
+      actors: z.string(),
+      category: z.string(),
+      description: z.string(),
+      fid: z.number().int(),
+      length: z.any(),
+      price: z.number(),
+      rating: z.any(),
+      title: z.string(),
+    },
+    validator: z
+      .object({
+        actors: z.string().nullable(),
+        category: z.string().nullable(),
+        description: z.string().nullable(),
+        fid: z.number().int().nullable(),
+        length: z.any(),
+        price: z.number().nullable(),
+        rating: z.any(),
+        title: z.string().nullable(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        actors: z.string(),
+        category: z.string(),
+        description: z.string(),
+        fid: z.number().int(),
+        length: z.any(),
+        price: z.number(),
+        rating: z.any(),
+        title: z.string(),
+      })
+      .strict(),
+  },
+  inventory: {
+    tableName: "inventory",
+    types: {
+      film_id: film_idSchema,
+      inventory_id: inventory_idSchema,
+      last_update: z.date(),
+      store_id: store_idSchema,
+    },
+    notNullTypes: {
+      film_id: film_idSchema,
+      inventory_id: inventory_idSchema,
+      last_update: z.date(),
+      store_id: store_idSchema,
+    },
+    validator: z
+      .object({
+        film_id: film_idSchema,
+        inventory_id: inventory_idSchema,
+        last_update: z.date(),
+        store_id: store_idSchema,
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        film_id: film_idSchema,
+        inventory_id: inventory_idSchema,
+        last_update: z.date(),
+        store_id: store_idSchema,
+      })
+      .strict(),
+  },
+  language: {
+    tableName: "language",
+    types: {
+      language_id: language_idSchema,
+      last_update: z.date(),
+      name: z.any(),
+    },
+    notNullTypes: {
+      language_id: language_idSchema,
+      last_update: z.date(),
+      name: z.any(),
+    },
+    validator: z
+      .object({
+        language_id: language_idSchema,
+        last_update: z.date(),
+        name: z.any(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        language_id: language_idSchema,
+        last_update: z.date(),
+        name: z.any(),
+      })
+      .strict(),
+  },
+  nicer_but_slower_film_list: {
+    tableName: "nicer_but_slower_film_list",
+    types: {
+      actors: z.string().nullable(),
+      category: z.string().nullable(),
+      description: z.string().nullable(),
+      fid: z.number().int().nullable(),
+      length: z.any(),
+      price: z.number().nullable(),
+      rating: z.any(),
+      title: z.string().nullable(),
+    },
+    notNullTypes: {
+      actors: z.string(),
+      category: z.string(),
+      description: z.string(),
+      fid: z.number().int(),
+      length: z.any(),
+      price: z.number(),
+      rating: z.any(),
+      title: z.string(),
+    },
+    validator: z
+      .object({
+        actors: z.string().nullable(),
+        category: z.string().nullable(),
+        description: z.string().nullable(),
+        fid: z.number().int().nullable(),
+        length: z.any(),
+        price: z.number().nullable(),
+        rating: z.any(),
+        title: z.string().nullable(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        actors: z.string(),
+        category: z.string(),
+        description: z.string(),
+        fid: z.number().int(),
+        length: z.any(),
+        price: z.number(),
+        rating: z.any(),
+        title: z.string(),
+      })
+      .strict(),
+  },
+  payment: {
+    tableName: "payment",
+    types: {
+      amount: z.number(),
+      customer_id: z.number().int(),
+      payment_date: z.date(),
+      payment_id: payment_idSchema,
+      rental_id: z.number().int(),
+      staff_id: z.number().int(),
+    },
+    notNullTypes: {
+      amount: z.number(),
+      customer_id: z.number().int(),
+      payment_date: z.date(),
+      payment_id: payment_idSchema,
+      rental_id: z.number().int(),
+      staff_id: z.number().int(),
+    },
+    validator: z
+      .object({
+        amount: z.number(),
+        customer_id: z.number().int(),
+        payment_date: z.date(),
+        payment_id: payment_idSchema,
+        rental_id: z.number().int(),
+        staff_id: z.number().int(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        amount: z.number(),
+        customer_id: z.number().int(),
+        payment_date: z.date(),
+        payment_id: payment_idSchema,
+        rental_id: z.number().int(),
+        staff_id: z.number().int(),
+      })
+      .strict(),
+  },
+  payment_p2022_01: {
+    tableName: "payment_p2022_01",
+    types: {
+      amount: z.number(),
+      customer_id: customer_idSchema,
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: rental_idSchema,
+      staff_id: staff_idSchema,
+    },
+    notNullTypes: {
+      amount: z.number(),
+      customer_id: customer_idSchema,
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: rental_idSchema,
+      staff_id: staff_idSchema,
+    },
+    validator: z
+      .object({
+        amount: z.number(),
+        customer_id: customer_idSchema,
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: rental_idSchema,
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        amount: z.number(),
+        customer_id: customer_idSchema,
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: rental_idSchema,
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+  },
+  payment_p2022_02: {
+    tableName: "payment_p2022_02",
+    types: {
+      amount: z.number(),
+      customer_id: customer_idSchema,
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: rental_idSchema,
+      staff_id: staff_idSchema,
+    },
+    notNullTypes: {
+      amount: z.number(),
+      customer_id: customer_idSchema,
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: rental_idSchema,
+      staff_id: staff_idSchema,
+    },
+    validator: z
+      .object({
+        amount: z.number(),
+        customer_id: customer_idSchema,
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: rental_idSchema,
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        amount: z.number(),
+        customer_id: customer_idSchema,
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: rental_idSchema,
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+  },
+  payment_p2022_03: {
+    tableName: "payment_p2022_03",
+    types: {
+      amount: z.number(),
+      customer_id: customer_idSchema,
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: rental_idSchema,
+      staff_id: staff_idSchema,
+    },
+    notNullTypes: {
+      amount: z.number(),
+      customer_id: customer_idSchema,
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: rental_idSchema,
+      staff_id: staff_idSchema,
+    },
+    validator: z
+      .object({
+        amount: z.number(),
+        customer_id: customer_idSchema,
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: rental_idSchema,
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        amount: z.number(),
+        customer_id: customer_idSchema,
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: rental_idSchema,
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+  },
+  payment_p2022_04: {
+    tableName: "payment_p2022_04",
+    types: {
+      amount: z.number(),
+      customer_id: customer_idSchema,
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: rental_idSchema,
+      staff_id: staff_idSchema,
+    },
+    notNullTypes: {
+      amount: z.number(),
+      customer_id: customer_idSchema,
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: rental_idSchema,
+      staff_id: staff_idSchema,
+    },
+    validator: z
+      .object({
+        amount: z.number(),
+        customer_id: customer_idSchema,
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: rental_idSchema,
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        amount: z.number(),
+        customer_id: customer_idSchema,
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: rental_idSchema,
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+  },
+  payment_p2022_05: {
+    tableName: "payment_p2022_05",
+    types: {
+      amount: z.number(),
+      customer_id: customer_idSchema,
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: rental_idSchema,
+      staff_id: staff_idSchema,
+    },
+    notNullTypes: {
+      amount: z.number(),
+      customer_id: customer_idSchema,
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: rental_idSchema,
+      staff_id: staff_idSchema,
+    },
+    validator: z
+      .object({
+        amount: z.number(),
+        customer_id: customer_idSchema,
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: rental_idSchema,
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        amount: z.number(),
+        customer_id: customer_idSchema,
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: rental_idSchema,
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+  },
+  payment_p2022_06: {
+    tableName: "payment_p2022_06",
+    types: {
+      amount: z.number(),
+      customer_id: customer_idSchema,
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: rental_idSchema,
+      staff_id: staff_idSchema,
+    },
+    notNullTypes: {
+      amount: z.number(),
+      customer_id: customer_idSchema,
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: rental_idSchema,
+      staff_id: staff_idSchema,
+    },
+    validator: z
+      .object({
+        amount: z.number(),
+        customer_id: customer_idSchema,
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: rental_idSchema,
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        amount: z.number(),
+        customer_id: customer_idSchema,
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: rental_idSchema,
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+  },
+  payment_p2022_07: {
+    tableName: "payment_p2022_07",
+    types: {
+      amount: z.number(),
+      customer_id: z.number().int(),
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: z.number().int(),
+      staff_id: z.number().int(),
+    },
+    notNullTypes: {
+      amount: z.number(),
+      customer_id: z.number().int(),
+      payment_date: z.date(),
+      payment_id: z.number().int(),
+      rental_id: z.number().int(),
+      staff_id: z.number().int(),
+    },
+    validator: z
+      .object({
+        amount: z.number(),
+        customer_id: z.number().int(),
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: z.number().int(),
+        staff_id: z.number().int(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        amount: z.number(),
+        customer_id: z.number().int(),
+        payment_date: z.date(),
+        payment_id: z.number().int(),
+        rental_id: z.number().int(),
+        staff_id: z.number().int(),
+      })
+      .strict(),
+  },
+  rental: {
+    tableName: "rental",
+    types: {
+      customer_id: customer_idSchema,
+      inventory_id: inventory_idSchema,
+      last_update: z.date(),
+      rental_date: z.date(),
+      rental_id: rental_idSchema,
+      return_date: z.date().nullable(),
+      staff_id: staff_idSchema,
+    },
+    notNullTypes: {
+      customer_id: customer_idSchema,
+      inventory_id: inventory_idSchema,
+      last_update: z.date(),
+      rental_date: z.date(),
+      rental_id: rental_idSchema,
+      return_date: z.date(),
+      staff_id: staff_idSchema,
+    },
+    validator: z
+      .object({
+        customer_id: customer_idSchema,
+        inventory_id: inventory_idSchema,
+        last_update: z.date(),
+        rental_date: z.date(),
+        rental_id: rental_idSchema,
+        return_date: z.date().nullable(),
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        customer_id: customer_idSchema,
+        inventory_id: inventory_idSchema,
+        last_update: z.date(),
+        rental_date: z.date(),
+        rental_id: rental_idSchema,
+        return_date: z.date(),
+        staff_id: staff_idSchema,
+      })
+      .strict(),
+  },
+  sales_by_film_category: {
+    tableName: "sales_by_film_category",
+    types: {
+      category: z.string().nullable(),
+      total_sales: z.number().nullable(),
+    },
+    notNullTypes: {
+      category: z.string(),
+      total_sales: z.number(),
+    },
+    validator: z
+      .object({
+        category: z.string().nullable(),
+        total_sales: z.number().nullable(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        category: z.string(),
+        total_sales: z.number(),
+      })
+      .strict(),
+  },
+  sales_by_store: {
+    tableName: "sales_by_store",
+    types: {
+      manager: z.string().nullable(),
+      store: z.string().nullable(),
+      total_sales: z.number().nullable(),
+    },
+    notNullTypes: {
+      manager: z.string(),
+      store: z.string(),
+      total_sales: z.number(),
+    },
+    validator: z
+      .object({
+        manager: z.string().nullable(),
+        store: z.string().nullable(),
+        total_sales: z.number().nullable(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        manager: z.string(),
+        store: z.string(),
+        total_sales: z.number(),
+      })
+      .strict(),
+  },
+  staff: {
+    tableName: "staff",
+    types: {
+      active: z.boolean(),
+      address_id: address_idSchema,
+      email: z.string().nullable(),
+      first_name: z.string(),
+      last_name: z.string(),
+      last_update: z.date(),
+      password: z.string().nullable(),
+      picture: z.instanceof(Buffer).nullable(),
+      staff_id: staff_idSchema,
+      store_id: store_idSchema,
+      username: z.string(),
+    },
+    notNullTypes: {
+      active: z.boolean(),
+      address_id: address_idSchema,
+      email: z.string(),
+      first_name: z.string(),
+      last_name: z.string(),
+      last_update: z.date(),
+      password: z.string(),
+      picture: z.instanceof(Buffer),
+      staff_id: staff_idSchema,
+      store_id: store_idSchema,
+      username: z.string(),
+    },
+    validator: z
+      .object({
+        active: z.boolean(),
+        address_id: address_idSchema,
+        email: z.string().nullable(),
+        first_name: z.string(),
+        last_name: z.string(),
+        last_update: z.date(),
+        password: z.string().nullable(),
+        picture: z.instanceof(Buffer).nullable(),
+        staff_id: staff_idSchema,
+        store_id: store_idSchema,
+        username: z.string(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        active: z.boolean(),
+        address_id: address_idSchema,
+        email: z.string(),
+        first_name: z.string(),
+        last_name: z.string(),
+        last_update: z.date(),
+        password: z.string(),
+        picture: z.instanceof(Buffer),
+        staff_id: staff_idSchema,
+        store_id: store_idSchema,
+        username: z.string(),
+      })
+      .strict(),
+  },
+  staff_list: {
+    tableName: "staff_list",
+    types: {
+      address: z.string().nullable(),
+      city: z.string().nullable(),
+      country: z.string().nullable(),
+      id: z.number().int().nullable(),
+      name: z.string().nullable(),
+      phone: z.string().nullable(),
+      sid: z.number().int().nullable(),
+      zip_code: z.string().nullable(),
+    },
+    notNullTypes: {
+      address: z.string(),
+      city: z.string(),
+      country: z.string(),
+      id: z.number().int(),
+      name: z.string(),
+      phone: z.string(),
+      sid: z.number().int(),
+      zip_code: z.string(),
+    },
+    validator: z
+      .object({
+        address: z.string().nullable(),
+        city: z.string().nullable(),
+        country: z.string().nullable(),
+        id: z.number().int().nullable(),
+        name: z.string().nullable(),
+        phone: z.string().nullable(),
+        sid: z.number().int().nullable(),
+        zip_code: z.string().nullable(),
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        address: z.string(),
+        city: z.string(),
+        country: z.string(),
+        id: z.number().int(),
+        name: z.string(),
+        phone: z.string(),
+        sid: z.number().int(),
+        zip_code: z.string(),
+      })
+      .strict(),
+  },
+  store: {
+    tableName: "store",
+    types: {
+      address_id: address_idSchema,
+      last_update: z.date(),
+      manager_staff_id: z.number().int(),
+      store_id: store_idSchema,
+    },
+    notNullTypes: {
+      address_id: address_idSchema,
+      last_update: z.date(),
+      manager_staff_id: z.number().int(),
+      store_id: store_idSchema,
+    },
+    validator: z
+      .object({
+        address_id: address_idSchema,
+        last_update: z.date(),
+        manager_staff_id: z.number().int(),
+        store_id: store_idSchema,
+      })
+      .strict(),
+    notNullValidator: z
+      .object({
+        address_id: address_idSchema,
+        last_update: z.date(),
+        manager_staff_id: z.number().int(),
+        store_id: store_idSchema,
+      })
+      .strict(),
+  },
+};
+
+type Schemas = typeof pagila_schema;
+type RowTypes = {
+  [K in keyof Schemas]: Schemas[K]["types"] & {
+    notNull: Schemas[K]["notNullTypes"];
+  };
+};
+
+export const rowTypes: RowTypes = Object.fromEntries(
+  Object.entries(pagila_schema).map(([key, value]) => [
+    key,
+    { ...value.types, notNull: value.notNullTypes },
+  ]),
+) as unknown as RowTypes;
+
+export type actorType = z.infer<typeof pagila_schema.actor.validator>;
+export type actorTypeNotNull = z.infer<
+  typeof pagila_schema.actor.notNullValidator
+>;
+
+export type actor_infoType = z.infer<typeof pagila_schema.actor_info.validator>;
+export type actor_infoTypeNotNull = z.infer<
+  typeof pagila_schema.actor_info.notNullValidator
+>;
+
+export type addressType = z.infer<typeof pagila_schema.address.validator>;
+export type addressTypeNotNull = z.infer<
+  typeof pagila_schema.address.notNullValidator
+>;
+
+export type categoryType = z.infer<typeof pagila_schema.category.validator>;
+export type categoryTypeNotNull = z.infer<
+  typeof pagila_schema.category.notNullValidator
+>;
+
+export type cityType = z.infer<typeof pagila_schema.city.validator>;
+export type cityTypeNotNull = z.infer<
+  typeof pagila_schema.city.notNullValidator
+>;
+
+export type countryType = z.infer<typeof pagila_schema.country.validator>;
+export type countryTypeNotNull = z.infer<
+  typeof pagila_schema.country.notNullValidator
+>;
+
+export type customerType = z.infer<typeof pagila_schema.customer.validator>;
+export type customerTypeNotNull = z.infer<
+  typeof pagila_schema.customer.notNullValidator
+>;
+
+export type customer_listType = z.infer<
+  typeof pagila_schema.customer_list.validator
+>;
+export type customer_listTypeNotNull = z.infer<
+  typeof pagila_schema.customer_list.notNullValidator
+>;
+
+export type filmType = z.infer<typeof pagila_schema.film.validator>;
+export type filmTypeNotNull = z.infer<
+  typeof pagila_schema.film.notNullValidator
+>;
+
+export type film_actorType = z.infer<typeof pagila_schema.film_actor.validator>;
+export type film_actorTypeNotNull = z.infer<
+  typeof pagila_schema.film_actor.notNullValidator
+>;
+
+export type film_categoryType = z.infer<
+  typeof pagila_schema.film_category.validator
+>;
+export type film_categoryTypeNotNull = z.infer<
+  typeof pagila_schema.film_category.notNullValidator
+>;
+
+export type film_listType = z.infer<typeof pagila_schema.film_list.validator>;
+export type film_listTypeNotNull = z.infer<
+  typeof pagila_schema.film_list.notNullValidator
+>;
+
+export type inventoryType = z.infer<typeof pagila_schema.inventory.validator>;
+export type inventoryTypeNotNull = z.infer<
+  typeof pagila_schema.inventory.notNullValidator
+>;
+
+export type languageType = z.infer<typeof pagila_schema.language.validator>;
+export type languageTypeNotNull = z.infer<
+  typeof pagila_schema.language.notNullValidator
+>;
+
+export type nicer_but_slower_film_listType = z.infer<
+  typeof pagila_schema.nicer_but_slower_film_list.validator
+>;
+export type nicer_but_slower_film_listTypeNotNull = z.infer<
+  typeof pagila_schema.nicer_but_slower_film_list.notNullValidator
+>;
+
+export type paymentType = z.infer<typeof pagila_schema.payment.validator>;
+export type paymentTypeNotNull = z.infer<
+  typeof pagila_schema.payment.notNullValidator
+>;
+
+export type payment_p2022_01Type = z.infer<
+  typeof pagila_schema.payment_p2022_01.validator
+>;
+export type payment_p2022_01TypeNotNull = z.infer<
+  typeof pagila_schema.payment_p2022_01.notNullValidator
+>;
+
+export type payment_p2022_02Type = z.infer<
+  typeof pagila_schema.payment_p2022_02.validator
+>;
+export type payment_p2022_02TypeNotNull = z.infer<
+  typeof pagila_schema.payment_p2022_02.notNullValidator
+>;
+
+export type payment_p2022_03Type = z.infer<
+  typeof pagila_schema.payment_p2022_03.validator
+>;
+export type payment_p2022_03TypeNotNull = z.infer<
+  typeof pagila_schema.payment_p2022_03.notNullValidator
+>;
+
+export type payment_p2022_04Type = z.infer<
+  typeof pagila_schema.payment_p2022_04.validator
+>;
+export type payment_p2022_04TypeNotNull = z.infer<
+  typeof pagila_schema.payment_p2022_04.notNullValidator
+>;
+
+export type payment_p2022_05Type = z.infer<
+  typeof pagila_schema.payment_p2022_05.validator
+>;
+export type payment_p2022_05TypeNotNull = z.infer<
+  typeof pagila_schema.payment_p2022_05.notNullValidator
+>;
+
+export type payment_p2022_06Type = z.infer<
+  typeof pagila_schema.payment_p2022_06.validator
+>;
+export type payment_p2022_06TypeNotNull = z.infer<
+  typeof pagila_schema.payment_p2022_06.notNullValidator
+>;
+
+export type payment_p2022_07Type = z.infer<
+  typeof pagila_schema.payment_p2022_07.validator
+>;
+export type payment_p2022_07TypeNotNull = z.infer<
+  typeof pagila_schema.payment_p2022_07.notNullValidator
+>;
+
+export type rentalType = z.infer<typeof pagila_schema.rental.validator>;
+export type rentalTypeNotNull = z.infer<
+  typeof pagila_schema.rental.notNullValidator
+>;
+
+export type sales_by_film_categoryType = z.infer<
+  typeof pagila_schema.sales_by_film_category.validator
+>;
+export type sales_by_film_categoryTypeNotNull = z.infer<
+  typeof pagila_schema.sales_by_film_category.notNullValidator
+>;
+
+export type sales_by_storeType = z.infer<
+  typeof pagila_schema.sales_by_store.validator
+>;
+export type sales_by_storeTypeNotNull = z.infer<
+  typeof pagila_schema.sales_by_store.notNullValidator
+>;
+
+export type staffType = z.infer<typeof pagila_schema.staff.validator>;
+export type staffTypeNotNull = z.infer<
+  typeof pagila_schema.staff.notNullValidator
+>;
+
+export type staff_listType = z.infer<typeof pagila_schema.staff_list.validator>;
+export type staff_listTypeNotNull = z.infer<
+  typeof pagila_schema.staff_list.notNullValidator
+>;
+
+export type storeType = z.infer<typeof pagila_schema.store.validator>;
+export type storeTypeNotNull = z.infer<
+  typeof pagila_schema.store.notNullValidator
+>;
+
+export const actor = rowTypes.actor;
+export const actor_info = rowTypes.actor_info;
+export const address = rowTypes.address;
+export const category = rowTypes.category;
+export const city = rowTypes.city;
+export const country = rowTypes.country;
+export const customer = rowTypes.customer;
+export const customer_list = rowTypes.customer_list;
+export const film = rowTypes.film;
+export const film_actor = rowTypes.film_actor;
+export const film_category = rowTypes.film_category;
+export const film_list = rowTypes.film_list;
+export const inventory = rowTypes.inventory;
+export const language = rowTypes.language;
+export const nicer_but_slower_film_list = rowTypes.nicer_but_slower_film_list;
+export const payment = rowTypes.payment;
+export const payment_p2022_01 = rowTypes.payment_p2022_01;
+export const payment_p2022_02 = rowTypes.payment_p2022_02;
+export const payment_p2022_03 = rowTypes.payment_p2022_03;
+export const payment_p2022_04 = rowTypes.payment_p2022_04;
+export const payment_p2022_05 = rowTypes.payment_p2022_05;
+export const payment_p2022_06 = rowTypes.payment_p2022_06;
+export const payment_p2022_07 = rowTypes.payment_p2022_07;
+export const rental = rowTypes.rental;
+export const sales_by_film_category = rowTypes.sales_by_film_category;
+export const sales_by_store = rowTypes.sales_by_store;
+export const staff = rowTypes.staff;
+export const staff_list = rowTypes.staff_list;
+export const store = rowTypes.store;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { ForeignKey } from "./schema-generator";
-import { config } from "./schema-generation-config";
+import { config, UNKNOWN_DATA_TYPE_ZOD_TYPE } from "./schema-generation-config";
 
 export interface ColumnToGenerate {
   name: string;
@@ -35,6 +35,16 @@ const getZodType = (row: PublicSchemaRow): string | null => {
 
 const parseColumn = (row: PublicSchemaRow): ColumnToGenerate => {
   const zodType = getZodType(row);
+
+  if (!zodType && config().allowUnknownDataTypes) {
+    return {
+      name: row.column_name,
+      zodType: UNKNOWN_DATA_TYPE_ZOD_TYPE,
+      zodTypeWithoutNullable: UNKNOWN_DATA_TYPE_ZOD_TYPE,
+      isPrimaryKey: false,
+    };
+  }
+
   if (!zodType) {
     throw new Error(
       `Unknown data type: ${row.data_type}: \n${JSON.stringify(row, null, 2)}`,
