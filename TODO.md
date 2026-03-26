@@ -2,6 +2,7 @@
 
 ## Pending tasks
 
+- add support for recognizing primary keys automatically
 - add tests for cases where the schema has an incorrect typescript name (e.g., column name has whitespace)
 - add tests for "allowUnknownDataTypes" config option
 - add support for named schemas (currently only public schema is supported)

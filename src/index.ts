@@ -7,7 +7,7 @@ export type { DbConfig, DBClient } from "./database/types";
 export { sql } from "./database/sql/sql-builder";
 
 // Operations
-export { createOperation, prepareOperation } from "./database/operations";
+export { createOperation } from "./database/operations";
 export type {
   OperationBuilder,
   OperationResult,
