@@ -2,6 +2,7 @@ import { runSqlStatement, runUsingTransaction } from "./query-logic";
 import { prepareOperation } from "./operations";
 import type { ClientMetadata, DBClient, DbConfig } from "./types";
 import type { PoolLike, PoolClientLike } from "./external-types";
+import { PiquelError, PiquelErrorCode } from "../errors";
 
 interface QueryParams {
   getClient: () => Promise<PoolClientLike>;
@@ -61,7 +62,7 @@ const createQueryOne =
     });
     const firstRow: unknown = rows[0];
     if (firstRow === undefined) {
-      throw new Error("Query returned undefined");
+      throw new PiquelError(PiquelErrorCode.QUERY_RETURNED_NO_ROWS);
     }
     return useZodValidation ? validator.parse(firstRow) : (firstRow as never);
   };

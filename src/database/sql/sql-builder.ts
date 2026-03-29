@@ -1,11 +1,13 @@
 import type { SqlParameter, SQLDefinition, TemplateQuery } from "../types";
+import { PiquelError, PiquelErrorCode } from "../../errors";
 
 const assertDefined = <T>(
   value: T | undefined | null,
-  errorMessage: string,
+  code: PiquelErrorCode,
+  detail?: string,
 ): T => {
   if (value === undefined || value === null) {
-    throw new Error(errorMessage);
+    throw new PiquelError(code, detail);
   }
   return value;
 };
@@ -36,7 +38,10 @@ class SqlDefinitionBuilder {
   }: SQLDefinition): void {
     for (let i = 0; i < templateSqlQuery.length; i++) {
       this.appendRawSql(
-        assertDefined(templateSqlQuery[i], "Template SQL query is undefined"),
+        assertDefined(
+          templateSqlQuery[i],
+          PiquelErrorCode.TEMPLATE_SQL_UNDEFINED,
+        ),
       );
       if (i >= sqlParameters.length) {
         continue;
@@ -46,7 +51,7 @@ class SqlDefinitionBuilder {
 
       // Null values are allowed here so we check for undefined only
       if (parameter === undefined) {
-        throw new Error("Undefined SQL parameter");
+        throw new PiquelError(PiquelErrorCode.UNDEFINED_SQL_PARAMETER);
       }
 
       const subQueryParameter = sqlDefinitionSchema.safeParse(parameter);
@@ -78,7 +83,7 @@ const combineQueryAndParameters = (
   sqlParameters: SqlParameter[],
 ): SQLDefinition => {
   if (templateQueryParts.length !== sqlParameters.length + 1) {
-    throw new Error("Template query parts and SQL parameters count mismatch");
+    throw new PiquelError(PiquelErrorCode.SQL_PARAMETER_COUNT_MISMATCH);
   }
 
   const builder = new SqlDefinitionBuilder();

@@ -68,7 +68,9 @@ const rows = await db.client.query(sql`SELECT now()`);
 
 ## Error behavior
 
-- `queryOne` throws if the query returns zero rows
+- `queryOne` throws a `PiquelError` with code `QUERY_RETURNED_NO_ROWS` if the query returns zero rows
 - `queryOne` and `queryOneOrNone` return the first row when multiple rows match
+
+All errors thrown by Piquel are instances of `PiquelError`, which carries a `code` property (`PiquelErrorCode`) for programmatic handling. See [`src/errors.ts`](../src/errors.ts) for the full list of error codes.
 
 See the [pagila example](../examples/) for a runnable demo of all query methods.

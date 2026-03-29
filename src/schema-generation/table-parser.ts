@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { ForeignKey, PrimaryKey } from "./schema-generator";
 import { config, UNKNOWN_DATA_TYPE_ZOD_TYPE } from "./schema-generation-config";
+import { PiquelError, PiquelErrorCode } from "../errors";
 
 export interface ColumnToGenerate {
   name: string;
@@ -49,8 +50,9 @@ const parseColumn = (
   }
 
   if (!zodType) {
-    throw new Error(
-      `Unknown data type: ${row.data_type}: \n${JSON.stringify(row, null, 2)}`,
+    throw new PiquelError(
+      PiquelErrorCode.UNKNOWN_DATA_TYPE,
+      `${row.data_type}: \n${JSON.stringify(row, null, 2)}`,
     );
   }
 

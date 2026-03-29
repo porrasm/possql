@@ -1,4 +1,5 @@
 import type { PublicSchemaRow } from "./table-parser";
+import { PiquelError, PiquelErrorCode } from "../errors";
 
 export const UNKNOWN_DATA_TYPE_ZOD_TYPE = "z.any()";
 
@@ -27,8 +28,9 @@ const wrapNameTransformWithValidation = (
   return (name: string) => {
     const transformedName = transform(name);
     if (!VALID_TYPESCRIPT_OBJECT_NAME_REGEX.test(transformedName)) {
-      throw new Error(
-        `Invalid Typescript object name: '${transformedName}'. Use the "columnNameTransform" or "tableNameTransform" to transform the names to valid Typescript object names.`,
+      throw new PiquelError(
+        PiquelErrorCode.INVALID_TYPESCRIPT_NAME,
+        `'${transformedName}' is not a valid TypeScript identifier. Use the "columnNameTransform" or "tableNameTransform" to transform the names.`,
       );
     }
     return transformedName;
@@ -105,7 +107,7 @@ export const config = (): PopulatedSchemaGenerationConfig => {
     return populatedSchemaGenerationConfig;
   }
 
-  throw new Error("Config not initialized");
+  throw new PiquelError(PiquelErrorCode.CONFIG_NOT_INITIALIZED);
 };
 
 export const setConfig = (config: Partial<SchemaGenerationConfig>): void => {

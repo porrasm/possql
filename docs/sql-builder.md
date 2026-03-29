@@ -30,7 +30,7 @@ The `sql` template accepts:
 - Arrays and objects of primitives (serialized by the driver, useful for `jsonb`)
 - Another `SQLDefinition` (nested composition — see below)
 
-`undefined` is **not** accepted and throws at runtime. This prevents accidental silent bugs where a missing value would be interpolated as `NULL`.
+`undefined` is **not** accepted and throws a `PiquelError` with code `UNDEFINED_SQL_PARAMETER` at runtime. This prevents accidental silent bugs where a missing value would be interpolated as `NULL`.
 
 ## Nested composition
 

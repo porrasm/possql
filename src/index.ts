@@ -38,3 +38,9 @@ export type { SchemaGenerationConfig } from "./schema-generation/schema-generati
 
 /** Generates Zod/TypeScript schema artifacts from a PostgreSQL database. */
 export { runSchemaGeneration } from "./schema-generation/schema-generator";
+
+/** Custom error class thrown by all Piquel operations. */
+export { PiquelError } from "./errors";
+
+/** Error code enum for programmatic error handling. */
+export { PiquelErrorCode } from "./errors";

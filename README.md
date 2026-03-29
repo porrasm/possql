@@ -62,6 +62,7 @@ npm install pg
 | **[Transactions](docs/transactions.md)** | `db.transact()` with automatic commit/rollback |
 | **[Schema generation](docs/schema-generation.md)** | `runSchemaGeneration` introspects PostgreSQL and generates Zod validators + TypeScript types |
 | **[Adapter contract](docs/adapter-contract.md)** | `PoolLike`/`PoolClientLike` interfaces for integrating any PostgreSQL driver |
+| **[Error handling](src/errors.ts)** | `PiquelError` class with typed `PiquelErrorCode` for programmatic error handling |
 
 ### Why Piquel?
 

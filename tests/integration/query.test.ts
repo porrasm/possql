@@ -97,7 +97,7 @@ describe("queryOne", () => {
         sql`SELECT * FROM users WHERE user_id = ${999}`,
         userSchema,
       ),
-    ).rejects.toThrow("Query returned undefined");
+    ).rejects.toThrow("queryOne expected at least one row");
   });
 });
 

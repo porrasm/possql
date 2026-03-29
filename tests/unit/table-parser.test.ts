@@ -229,7 +229,7 @@ describe("parsePublicSchema", () => {
         }),
       ];
       expect(() => parsePublicSchema(rows, [], [])).toThrow(
-        /Unknown data type/,
+        /no known Zod mapping/,
       );
     });
   });

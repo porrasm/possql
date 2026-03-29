@@ -42,14 +42,14 @@ describe("generateSchemaTypescript", () => {
         ],
       });
       expect(() => generateSchemaTypescript([table])).toThrow(
-        /Invalid Typescript object name.*first name/,
+        /not a valid TypeScript identifier.*first name/,
       );
     });
 
     it("throws when a table name contains whitespace", () => {
       const table = makeTable({ name: "my table" });
       expect(() => generateSchemaTypescript([table])).toThrow(
-        /Invalid Typescript object name.*my table/,
+        /not a valid TypeScript identifier.*my table/,
       );
     });
 
@@ -65,14 +65,14 @@ describe("generateSchemaTypescript", () => {
         ],
       });
       expect(() => generateSchemaTypescript([table])).toThrow(
-        /Invalid Typescript object name.*1column/,
+        /not a valid TypeScript identifier.*1column/,
       );
     });
 
     it("throws when a table name starts with a number", () => {
       const table = makeTable({ name: "123table" });
       expect(() => generateSchemaTypescript([table])).toThrow(
-        /Invalid Typescript object name.*123table/,
+        /not a valid TypeScript identifier.*123table/,
       );
     });
 
@@ -88,7 +88,7 @@ describe("generateSchemaTypescript", () => {
         ],
       });
       expect(() => generateSchemaTypescript([table])).toThrow(
-        /Invalid Typescript object name.*user-name/,
+        /not a valid TypeScript identifier.*user-name/,
       );
     });
 

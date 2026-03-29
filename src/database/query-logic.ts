@@ -1,5 +1,6 @@
 import { type PoolClientLike } from "./external-types";
 import type { ClientMetadata, SQLDefinition } from "./types";
+import { PiquelError, PiquelErrorCode } from "../errors";
 import sqlTemplateStrings from "sql-template-strings";
 
 export const runUsingTransaction = async <T>(
@@ -29,7 +30,7 @@ const sqlDefinitionToSqlStatement = (
   sql: SQLDefinition,
 ): ReturnType<typeof sqlTemplateStrings> => {
   if (sql.templateSqlQuery.length !== sql.sqlParameters.length + 1) {
-    throw new Error("Template query parts and SQL parameters count mismatch");
+    throw new PiquelError(PiquelErrorCode.SQL_PARAMETER_COUNT_MISMATCH);
   }
 
   return sqlTemplateStrings(
