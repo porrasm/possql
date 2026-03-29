@@ -59,7 +59,11 @@ describe("parsePublicSchema", () => {
           data_type: "integer",
         }),
       ];
-      const tables = parsePublicSchema(rows, [], [pk("zebra", "zebra_id"), pk("alpha", "alpha_id")]);
+      const tables = parsePublicSchema(
+        rows,
+        [],
+        [pk("zebra", "zebra_id"), pk("alpha", "alpha_id")],
+      );
       expect(tables[0]?.name).toBe("alpha");
       expect(tables[1]?.name).toBe("zebra");
     });
@@ -178,7 +182,11 @@ describe("parsePublicSchema", () => {
           data_type: "integer",
         }),
       ];
-      const tables = parsePublicSchema(rows, [], [pk("migrations", "migrations_id"), pk("user", "user_id")]);
+      const tables = parsePublicSchema(
+        rows,
+        [],
+        [pk("migrations", "migrations_id"), pk("user", "user_id")],
+      );
       const tableNames = tables.map((t) => t.name);
       expect(tableNames).not.toContain("migrations");
       expect(tableNames).toContain("user");
@@ -201,7 +209,11 @@ describe("parsePublicSchema", () => {
           data_type: "integer",
         }),
       ];
-      const tables = parsePublicSchema(rows, [], [pk("custom_ignored", "custom_ignored_id"), pk("user", "user_id")]);
+      const tables = parsePublicSchema(
+        rows,
+        [],
+        [pk("custom_ignored", "custom_ignored_id"), pk("user", "user_id")],
+      );
       const tableNames = tables.map((t) => t.name);
       expect(tableNames).not.toContain("custom_ignored");
     });
@@ -216,7 +228,9 @@ describe("parsePublicSchema", () => {
           udt_name: "???",
         }),
       ];
-      expect(() => parsePublicSchema(rows, [], [])).toThrow(/Unknown data type/);
+      expect(() => parsePublicSchema(rows, [], [])).toThrow(
+        /Unknown data type/,
+      );
     });
   });
 
@@ -339,7 +353,10 @@ describe("parsePublicSchema", () => {
           foreign_column_name: "user_id",
         },
       ];
-      const tables = parsePublicSchema(rows, foreignKeys, [pk("user", "user_id"), pk("post", "post_id")]);
+      const tables = parsePublicSchema(rows, foreignKeys, [
+        pk("user", "user_id"),
+        pk("post", "post_id"),
+      ]);
       const post = tables.find((t) => t.name === "post");
       const fkCol = post?.columns.find((c) => c.name === "user_id");
       expect(fkCol?.zodType).toContain("user_idSchema");
@@ -366,7 +383,9 @@ describe("parsePublicSchema", () => {
           foreign_column_name: "email", // email is not a PK, so falls back
         },
       ];
-      const tables = parsePublicSchema(rows, foreignKeys, [pk("post", "post_id")]);
+      const tables = parsePublicSchema(rows, foreignKeys, [
+        pk("post", "post_id"),
+      ]);
       const post = tables.find((t) => t.name === "post");
       const col = post?.columns.find((c) => c.name === "author_ref");
       expect(col?.zodType).toBe("z.number().int()");

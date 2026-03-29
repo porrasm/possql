@@ -52,4 +52,3 @@ export interface DbConfig {
    * For production, this can be disabled to improve performance. */
   useZodValidation: boolean;
 }
-

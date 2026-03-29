@@ -21,7 +21,9 @@
     "typecheck:tests": "tsc --noEmit -p tests/tsconfig.json",
     "typecheck:examples": "tsc --noEmit -p examples/tsconfig.json",
     "example": "tsx examples/main.ts",
-    "example:schema": "RUN_SCHEMA_GEN=true tsx examples/main.ts"
+    "example:schema": "RUN_SCHEMA_GEN=true tsx examples/main.ts",
+    "prettier:format": "prettier --write src tests examples",
+    "prettier:check": "prettier --check src tests examples"
   },
   "dependencies": {
     "sql-template-strings": "^2.2.2",
@@ -34,6 +36,7 @@
     "@vitest/coverage-v8": "^4.1.0",
     "eslint": "^10.0.3",
     "pg": "^8",
+    "prettier": "^3.8.1",
     "tsx": "^4.21.0",
     "typescript": "^5",
     "typescript-eslint": "^8.57.0",

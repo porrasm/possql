@@ -4,7 +4,7 @@ import sqlTemplateStrings from "sql-template-strings";
 
 export const runUsingTransaction = async <T>(
   client: PoolClientLike,
-  fn: () => Promise<T>
+  fn: () => Promise<T>,
 ): Promise<T> => {
   try {
     await client.query("BEGIN");
@@ -25,20 +25,31 @@ interface RunSqlParams {
   clientMetadata: ClientMetadata;
 }
 
-const sqlDefinitionToSqlStatement = (sql: SQLDefinition): ReturnType<typeof sqlTemplateStrings> => {
+const sqlDefinitionToSqlStatement = (
+  sql: SQLDefinition,
+): ReturnType<typeof sqlTemplateStrings> => {
   if (sql.templateSqlQuery.length !== sql.sqlParameters.length + 1) {
     throw new Error("Template query parts and SQL parameters count mismatch");
   }
 
-  return sqlTemplateStrings(sql.templateSqlQuery, ...(sql.sqlParameters as string[]));
+  return sqlTemplateStrings(
+    sql.templateSqlQuery,
+    ...(sql.sqlParameters as string[]),
+  );
 };
 
-const runTransactionStatement = async ({ client, sql }: RunSqlParams): Promise<{ rows: unknown[] }> => {
+const runTransactionStatement = async ({
+  client,
+  sql,
+}: RunSqlParams): Promise<{ rows: unknown[] }> => {
   const sqlStatement = sqlDefinitionToSqlStatement(sql);
   return client.query(sqlStatement);
 };
 
-const runNormalStatement = ({ client, sql }: RunSqlParams): Promise<{ rows: unknown[] }> => {
+const runNormalStatement = ({
+  client,
+  sql,
+}: RunSqlParams): Promise<{ rows: unknown[] }> => {
   const sqlStatement = sqlDefinitionToSqlStatement(sql);
   try {
     return client.query(sqlStatement);
@@ -47,7 +58,9 @@ const runNormalStatement = ({ client, sql }: RunSqlParams): Promise<{ rows: unkn
   }
 };
 
-export const runSqlStatement = async (params: RunSqlParams): Promise<{ rows: unknown[] }> =>
+export const runSqlStatement = async (
+  params: RunSqlParams,
+): Promise<{ rows: unknown[] }> =>
   params.clientMetadata.type === "transaction"
     ? runTransactionStatement(params)
     : runNormalStatement(params);

@@ -60,7 +60,9 @@ export async function setupTestDb(
   return { db, pool, adminPool, schemaName };
 }
 
-export async function setupPublicSchemaTest(sqlFile: string): Promise<{ pool: pg.Pool }> {
+export async function setupPublicSchemaTest(
+  sqlFile: string,
+): Promise<{ pool: pg.Pool }> {
   const pool = new pg.Pool({ connectionString: TEST_DATABASE_URL });
   const sqlContent = fs.readFileSync(path.resolve(sqlFile), "utf8");
   await pool.query(sqlContent);
@@ -108,7 +110,9 @@ export async function setupDumpTestDb(
   const parsed = parseUrl(TEST_DATABASE_URL);
 
   // Create the database via the admin connection (connect to postgres maintenance db)
-  const adminPool = new pg.Pool({ connectionString: parsed.withDb("postgres") });
+  const adminPool = new pg.Pool({
+    connectionString: parsed.withDb("postgres"),
+  });
   await adminPool.query(`CREATE DATABASE "${dbName}"`);
 
   // Restore the dump with psql (handles COPY, custom search_path, etc.)
@@ -119,7 +123,10 @@ export async function setupDumpTestDb(
   );
 
   const pool = new pg.Pool({ connectionString: parsed.withDb(dbName) });
-  const db = createDatabase({ pool, useZodValidation: params?.useZodValidation ?? true });
+  const db = createDatabase({
+    pool,
+    useZodValidation: params?.useZodValidation ?? true,
+  });
 
   return { db, pool, adminPool, dbName };
 }

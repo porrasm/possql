@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { z } from "zod";
-import { createOperation, prepareOperation } from "../../src/database/operations";
+import {
+  createOperation,
+  prepareOperation,
+} from "../../src/database/operations";
 import { sql } from "../../src/database/sql/sql-builder";
 
 const simpleSql = sql`SELECT 1`;
@@ -27,7 +30,8 @@ describe("createOperation", () => {
   });
 
   it("accepts a function as SQL preparer", () => {
-    const preparer = (args: { id: number }) => sql`SELECT * FROM users WHERE user_id = ${args.id}`;
+    const preparer = (args: { id: number }) =>
+      sql`SELECT * FROM users WHERE user_id = ${args.id}`;
     const builder = createOperation(preparer, userSchema);
     const op = builder({ id: 7 });
     const prepared = op.prepareSql({ id: 7 });
@@ -56,7 +60,8 @@ describe("prepareOperation", () => {
 
   describe("one-argument overload with PreparedOperation", () => {
     it("calls prepareSql and returns the result with the operation's validator", () => {
-      const preparer = (args: { id: number }) => sql`SELECT * FROM users WHERE user_id = ${args.id}`;
+      const preparer = (args: { id: number }) =>
+        sql`SELECT * FROM users WHERE user_id = ${args.id}`;
       const builder = createOperation(preparer, userSchema);
       const op = builder({ id: 42 });
 

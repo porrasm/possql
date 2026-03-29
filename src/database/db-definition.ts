@@ -23,7 +23,7 @@ const createQuery =
       clientMetadata,
     });
     // rows is unknown[] from pg driver — zod validates at runtime, or caller accepts the trust boundary
-    return useZodValidation ? validator.array().parse(rows) : rows as never;
+    return useZodValidation ? validator.array().parse(rows) : (rows as never);
   };
 
 const createQueryOneOrNone =
@@ -43,7 +43,7 @@ const createQueryOneOrNone =
     if (!firstRow) {
       return null;
     }
-    return useZodValidation ? validator.parse(firstRow) : firstRow as never;
+    return useZodValidation ? validator.parse(firstRow) : (firstRow as never);
   };
 
 const createQueryOne =
@@ -63,7 +63,7 @@ const createQueryOne =
     if (firstRow === undefined) {
       throw new Error("Query returned undefined");
     }
-    return useZodValidation ? validator.parse(firstRow) : firstRow as never;
+    return useZodValidation ? validator.parse(firstRow) : (firstRow as never);
   };
 
 const createNonQuery =
