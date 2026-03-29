@@ -1,6 +1,15 @@
 # Piquel
 
+<p align="center">
+<a href="https://github.com/porrasm/piquel/actions/workflows/ci.yml"><img src="https://github.com/porrasm/piquel/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status" /></a>
+<a href="https://www.npmjs.com/package/piquel"><img src="https://img.shields.io/npm/v/piquel" alt="npm" /></a>
+<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/porrasm/piquel" alt="License" /></a>
+<a href="https://github.com/porrasm/piquel"><img src="https://img.shields.io/github/stars/porrasm/piquel" alt="GitHub stars" /></a>
+</p>
+
 Typed raw PostgreSQL queries with optional Zod validation and schema generation.
+
+> **[Read the full documentation](docs/)**
 
 ```ts
 import { z } from "zod";
@@ -59,7 +68,7 @@ Piquel is lightweight and versatile, and fits common patterns of database usage.
 
 ## Documentation
 
-Dcumentation is available in the [`docs/`](docs/) folder:
+Documentation is available in the [`docs/`](docs/) folder:
 
 - [Getting Started](docs/getting-started.md) — installation, prerequisites, quickstart
 - [SQL Builder](docs/sql-builder.md) — parameterized SQL, nesting, dynamic composition
