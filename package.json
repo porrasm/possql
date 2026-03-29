@@ -2,6 +2,10 @@
   "name": "piquel",
   "version": "0.1.0",
   "description": "Type-safe PostgreSQL database library with schema generation",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/porrasm/possql.git"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
