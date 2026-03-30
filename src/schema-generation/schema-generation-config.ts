@@ -65,7 +65,7 @@ const DEFAULT_ZOD_TYPE_MAP: Record<string, string> = {
   date: "z.date()",
   integer: "z.number().int()",
   boolean: "z.boolean()",
-  uuid: "z.uuid()",
+  uuid: "z.string().uuid()",
   "double precision": "z.number()",
   "character varying": "z.string()",
   point: `z.object({
@@ -73,7 +73,7 @@ const DEFAULT_ZOD_TYPE_MAP: Record<string, string> = {
     y: z.number(),
   })`,
   oid: "z.number()",
-  bytea: "z.instanceof(Buffer)",
+  bytea: "z.instanceof(Uint8Array)",
   numeric: "z.number()",
   jsonb: "z.record(z.string(), z.unknown())",
 };

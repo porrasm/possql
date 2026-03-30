@@ -15,6 +15,8 @@ npm install piquel zod
 npm install pg
 ```
 
+`piquel` requires Zod v4 (`zod@^4`).
+
 ## Quickstart
 
 ```ts

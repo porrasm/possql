@@ -18,7 +18,7 @@ export type category_id = z.infer<typeof category_idSchema>;
 export const event_idSchema = z.number().int().brand<"event_id">();
 export type event_id = z.infer<typeof event_idSchema>;
 
-export const file_idSchema = z.uuid().brand<"file_id">();
+export const file_idSchema = z.string().uuid().brand<"file_id">();
 export type file_id = z.infer<typeof file_idSchema>;
 
 export const int_array_idSchema = z.number().int().brand<"int_array_id">();
@@ -201,20 +201,20 @@ export const schema = {
   file: {
     tableName: "file",
     types: {
-      content: z.instanceof(Buffer),
+      content: z.instanceof(Uint8Array),
       file_id: file_idSchema,
       name: z.string(),
       object_oid: z.number().nullable(),
     },
     notNullTypes: {
-      content: z.instanceof(Buffer),
+      content: z.instanceof(Uint8Array),
       file_id: file_idSchema,
       name: z.string(),
       object_oid: z.number(),
     },
     validator: z
       .object({
-        content: z.instanceof(Buffer),
+        content: z.instanceof(Uint8Array),
         file_id: file_idSchema,
         name: z.string(),
         object_oid: z.number().nullable(),
@@ -222,7 +222,7 @@ export const schema = {
       .strict(),
     notNullValidator: z
       .object({
-        content: z.instanceof(Buffer),
+        content: z.instanceof(Uint8Array),
         file_id: file_idSchema,
         name: z.string(),
         object_oid: z.number(),
