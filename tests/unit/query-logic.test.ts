@@ -18,6 +18,30 @@ const txMetadata = { type: "transaction" as const };
 
 describe("runSqlStatement", () => {
   describe("normal client", () => {
+    it("does not release the client before an in-flight query settles", async () => {
+      let resolveQuery: ((value: { rows: unknown[] }) => void) | undefined;
+      const queryPromise = new Promise<{ rows: unknown[] }>((resolve) => {
+        resolveQuery = resolve;
+      });
+
+      const client = {
+        query: vi.fn().mockReturnValue(queryPromise),
+        release: vi.fn(),
+      };
+
+      const runPromise = runSqlStatement({
+        client,
+        sql: simpleSql,
+        clientMetadata: normalMetadata,
+      });
+
+      expect(client.release).not.toHaveBeenCalled();
+
+      resolveQuery?.({ rows: [{ n: 1 }] });
+      await expect(runPromise).resolves.toEqual({ rows: [{ n: 1 }] });
+      expect(client.release).toHaveBeenCalledOnce();
+    });
+
     it("releases the client after a successful query", async () => {
       const client = makeClient([{ n: 1 }]);
       await runSqlStatement({

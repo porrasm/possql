@@ -51,13 +51,13 @@ const runTransactionStatement = async ({
   return client.query(sqlStatement);
 };
 
-const runNormalStatement = ({
+const runNormalStatement = async ({
   client,
   sql,
 }: RunSqlParams): Promise<{ rows: unknown[] }> => {
   const sqlStatement = sqlDefinitionToSqlStatement(sql);
   try {
-    return client.query(sqlStatement);
+    return await client.query(sqlStatement);
   } finally {
     client.release();
   }
