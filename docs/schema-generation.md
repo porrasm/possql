@@ -35,6 +35,7 @@ Pass a `config` object to customize the generated output:
 await runSchemaGeneration({
   pool,
   outputTypescriptFile: "src/db/generated-schema.ts",
+  format: true, // default: true (uses `npx --no-install prettier --write`)
   config: {
     schemaExportName: "dbSchema",        // default: "schema"
     primaryKeySuffix: "_id",             // default: "_id"
@@ -74,6 +75,12 @@ await runSchemaGeneration({
 | `getIgnoredTables` | pass-through | Modify the set of ignored tables |
 | `getZodTypeMap` | pass-through | Modify the default PostgreSQL → Zod type map |
 | `getZodArrayTypeMap` | pass-through | Modify the default array type map |
+
+### Generation options
+
+| Option | Default | Description |
+|---|---|---|
+| `format` | `true` | If `true`, tries to format generated output with Prettier. If Prettier is not available, generation still succeeds and formatting is skipped. |
 
 ## Generated output
 

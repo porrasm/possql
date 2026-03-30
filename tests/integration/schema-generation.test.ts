@@ -74,6 +74,24 @@ describe("runSchemaGeneration", () => {
     }
   });
 
+  it("supports disabling formatting via format option", async () => {
+    const outputFile = path.join(os.tmpdir(), `schema-test-${Date.now()}.ts`);
+
+    try {
+      await runSchemaGeneration({
+        pool: ctx.pool,
+        outputTypescriptFile: outputFile,
+        format: false,
+      });
+      const content = fs.readFileSync(outputFile, "utf8");
+      expect(content).toContain('from "zod"');
+    } finally {
+      if (fs.existsSync(outputFile)) {
+        fs.unlinkSync(outputFile);
+      }
+    }
+  });
+
   it("respects custom schemaExportName config option", async () => {
     const outputFile = path.join(os.tmpdir(), `schema-test-${Date.now()}.ts`);
 
