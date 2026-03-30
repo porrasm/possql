@@ -22,6 +22,9 @@ export enum PiquelErrorCode {
 
   /** A column's PostgreSQL data type has no known Zod mapping. */
   UNKNOWN_DATA_TYPE = "UNKNOWN_DATA_TYPE",
+
+  /** Acquiring a connection from the pool exceeded `connectionTimeoutMs`. */
+  CONNECTION_TIMEOUT = "CONNECTION_TIMEOUT",
 }
 
 /** Human-readable descriptions for each error code. */
@@ -40,6 +43,8 @@ export const piquelErrorDescriptions: Record<PiquelErrorCode, string> = {
     "Schema generation config was accessed before calling setConfig",
   [PiquelErrorCode.UNKNOWN_DATA_TYPE]:
     "A column data type has no known Zod mapping",
+  [PiquelErrorCode.CONNECTION_TIMEOUT]:
+    "Timed out while waiting for a connection from the pool",
 };
 
 /** Custom error class for all Piquel errors. */

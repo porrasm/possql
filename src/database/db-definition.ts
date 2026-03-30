@@ -4,6 +4,49 @@ import type { ClientMetadata, DBClient, DbConfig } from "./types";
 import type { PoolLike, PoolClientLike } from "./external-types";
 import { PiquelError, PiquelErrorCode } from "../errors";
 
+function createGetClient(
+  pool: PoolLike,
+  connectionTimeoutMs: number | undefined,
+): () => Promise<PoolClientLike> {
+  if (connectionTimeoutMs === undefined || connectionTimeoutMs <= 0) {
+    return () => pool.connect();
+  }
+
+  const timeoutMs = connectionTimeoutMs;
+  const timeoutDetail = `Exceeded ${timeoutMs.toString()}ms`;
+
+  return async () => {
+    let didTimeout = false;
+    const connectPromise = pool.connect();
+    void connectPromise.then(
+      (client) => {
+        if (didTimeout) {
+          client.release();
+        }
+      },
+      () => undefined,
+    );
+
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timeoutId = setTimeout(() => {
+        didTimeout = true;
+        reject(
+          new PiquelError(PiquelErrorCode.CONNECTION_TIMEOUT, timeoutDetail),
+        );
+      }, timeoutMs);
+    });
+
+    try {
+      return await Promise.race([connectPromise, timeoutPromise]);
+    } finally {
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    }
+  };
+}
+
 interface QueryParams {
   getClient: () => Promise<PoolClientLike>;
   useZodValidation: boolean;
@@ -126,7 +169,7 @@ export const createDatabase = (config: DbConfig): Database => {
   };
 
   const queryParams: QueryParams = {
-    getClient: () => config.pool.connect(),
+    getClient: createGetClient(config.pool, config.connectionTimeoutMs),
     useZodValidation: config.useZodValidation,
     clientMetadata,
   };

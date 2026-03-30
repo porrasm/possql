@@ -51,4 +51,10 @@ export interface DbConfig {
   /** If true, the database query result will be validated using zod.
    * For production, this can be disabled to improve performance. */
   useZodValidation: boolean;
+  /**
+   * Max time in milliseconds to wait for `pool.connect()`. If the pool is
+   * exhausted or the server is unreachable, this bounds how long calls hang.
+   * Omit or set to `0` or less for no limit (default — same as passing only a pool).
+   */
+  connectionTimeoutMs?: number;
 }
