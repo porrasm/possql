@@ -8,8 +8,8 @@ import { execFileSync } from "child_process";
 import type { PoolLike } from "../database/external-types";
 import { sql } from "../database/sql/sql-builder";
 import {
+  populateSchemaGenerationConfig,
   type SchemaGenerationConfig,
-  setConfig,
 } from "./schema-generation-config";
 
 const foreignKeyValidator = z.object({
@@ -65,7 +65,9 @@ const dbHealthCheck = async (db: Database): Promise<void> => {
 export const runSchemaGeneration = async (
   params: SchemaGenerationParams,
 ): Promise<void> => {
-  setConfig(params.config ?? {});
+  const schemaGenerationConfig = populateSchemaGenerationConfig(
+    params.config ?? {},
+  );
 
   const db = createDatabase({
     pool: params.pool,
@@ -111,8 +113,16 @@ export const runSchemaGeneration = async (
     primaryKeyValidator,
   );
 
-  const tables = parsePublicSchema(rows, foreignKeys, primaryKeys);
-  const schemaDefinition = generateSchemaTypescript(tables);
+  const tables = parsePublicSchema(
+    rows,
+    foreignKeys,
+    primaryKeys,
+    schemaGenerationConfig,
+  );
+  const schemaDefinition = generateSchemaTypescript(
+    tables,
+    schemaGenerationConfig,
+  );
 
   fs.writeFileSync(params.outputTypescriptFile, schemaDefinition);
   if (params.format ?? true) {

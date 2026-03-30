@@ -1,6 +1,9 @@
 import { z } from "zod";
 import type { ForeignKey, PrimaryKey } from "./schema-generator";
-import { config, UNKNOWN_DATA_TYPE_ZOD_TYPE } from "./schema-generation-config";
+import {
+  type PopulatedSchemaGenerationConfig,
+  UNKNOWN_DATA_TYPE_ZOD_TYPE,
+} from "./schema-generation-config";
 import { PiquelError, PiquelErrorCode } from "../errors";
 
 export interface ColumnToGenerate {
@@ -26,21 +29,25 @@ export const publicSchemaValidator = z.object({
 
 export type PublicSchemaRow = z.infer<typeof publicSchemaValidator>;
 
-const getZodType = (row: PublicSchemaRow): string | null => {
+const getZodType = (
+  row: PublicSchemaRow,
+  config: PopulatedSchemaGenerationConfig,
+): string | null => {
   // Array type information does not contain the element type
-  if (row.data_type === config().arrayDataTypeName) {
-    return config().zodArrayTypeMap[row.udt_name] ?? null;
+  if (row.data_type === config.arrayDataTypeName) {
+    return config.zodArrayTypeMap[row.udt_name] ?? null;
   }
-  return config().zodTypeMap[row.data_type] ?? null;
+  return config.zodTypeMap[row.data_type] ?? null;
 };
 
 const parseColumn = (
   row: PublicSchemaRow,
   isPrimaryKey: boolean,
+  config: PopulatedSchemaGenerationConfig,
 ): ColumnToGenerate => {
-  const zodType = config().overrideZodType(row) ?? getZodType(row);
+  const zodType = config.overrideZodType(row) ?? getZodType(row, config);
 
-  if (!zodType && config().allowUnknownDataTypes) {
+  if (!zodType && config.allowUnknownDataTypes) {
     return {
       name: row.column_name,
       zodType: UNKNOWN_DATA_TYPE_ZOD_TYPE,
@@ -56,7 +63,7 @@ const parseColumn = (
     );
   }
 
-  const suffix = row.is_nullable === "YES" ? config().zodNullableSuffix : "";
+  const suffix = row.is_nullable === "YES" ? config.zodNullableSuffix : "";
 
   return {
     name: row.column_name,
@@ -70,6 +77,7 @@ export const parsePublicSchema = (
   rows: PublicSchemaRow[],
   foreignKeys: ForeignKey[],
   primaryKeys: PrimaryKey[],
+  config: PopulatedSchemaGenerationConfig,
 ): TableToGenerate[] => {
   const primaryKeySet = new Set(
     primaryKeys.map((pk) => `${pk.table_name}.${pk.column_name}`),
@@ -84,7 +92,7 @@ export const parsePublicSchema = (
   const tables = new Map<string, TableToGenerate>();
 
   rows.forEach((row) => {
-    if (config().ignoredTables.has(row.table_name)) {
+    if (config.ignoredTables.has(row.table_name)) {
       return;
     }
 
@@ -99,20 +107,19 @@ export const parsePublicSchema = (
         foreignKey.column_name === row.column_name,
     );
     if (foreignKey && isForeignKeyToAPrimaryKey(foreignKey)) {
-      const transformedForeignKeyTableName = config().tableNameTransform(
+      const transformedForeignKeyTableName = config.tableNameTransform(
         foreignKey.foreign_table_name,
       );
-      const suffix =
-        row.is_nullable === "YES" ? config().zodNullableSuffix : "";
+      const suffix = row.is_nullable === "YES" ? config.zodNullableSuffix : "";
       table.columns.push({
         name: row.column_name,
-        zodType: `${transformedForeignKeyTableName}${config().primaryKeySuffix}Schema${suffix}`,
-        zodTypeWithoutNullable: `${transformedForeignKeyTableName}${config().primaryKeySuffix}Schema`,
+        zodType: `${transformedForeignKeyTableName}${config.primaryKeySuffix}Schema${suffix}`,
+        zodTypeWithoutNullable: `${transformedForeignKeyTableName}${config.primaryKeySuffix}Schema`,
         isPrimaryKey: isPrimaryKey(row.table_name, row.column_name),
       });
     } else {
       table.columns.push(
-        parseColumn(row, isPrimaryKey(row.table_name, row.column_name)),
+        parseColumn(row, isPrimaryKey(row.table_name, row.column_name), config),
       );
     }
 

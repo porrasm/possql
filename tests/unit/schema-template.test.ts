@@ -1,11 +1,9 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { generateSchemaTypescript } from "../../src/schema-generation/schema.template";
-import { setConfig } from "../../src/schema-generation/schema-generation-config";
+import { populateSchemaGenerationConfig } from "../../src/schema-generation/schema-generation-config";
 import type { TableToGenerate } from "../../src/schema-generation/table-parser";
 
-beforeEach(() => {
-  setConfig({});
-});
+const defaultConfig = populateSchemaGenerationConfig({});
 
 function makeTable(overrides?: Partial<TableToGenerate>): TableToGenerate {
   return {
@@ -41,14 +39,14 @@ describe("generateSchemaTypescript", () => {
           },
         ],
       });
-      expect(() => generateSchemaTypescript([table])).toThrow(
+      expect(() => generateSchemaTypescript([table], defaultConfig)).toThrow(
         /not a valid TypeScript identifier.*first name/,
       );
     });
 
     it("throws when a table name contains whitespace", () => {
       const table = makeTable({ name: "my table" });
-      expect(() => generateSchemaTypescript([table])).toThrow(
+      expect(() => generateSchemaTypescript([table], defaultConfig)).toThrow(
         /not a valid TypeScript identifier.*my table/,
       );
     });
@@ -64,14 +62,14 @@ describe("generateSchemaTypescript", () => {
           },
         ],
       });
-      expect(() => generateSchemaTypescript([table])).toThrow(
+      expect(() => generateSchemaTypescript([table], defaultConfig)).toThrow(
         /not a valid TypeScript identifier.*1column/,
       );
     });
 
     it("throws when a table name starts with a number", () => {
       const table = makeTable({ name: "123table" });
-      expect(() => generateSchemaTypescript([table])).toThrow(
+      expect(() => generateSchemaTypescript([table], defaultConfig)).toThrow(
         /not a valid TypeScript identifier.*123table/,
       );
     });
@@ -87,7 +85,7 @@ describe("generateSchemaTypescript", () => {
           },
         ],
       });
-      expect(() => generateSchemaTypescript([table])).toThrow(
+      expect(() => generateSchemaTypescript([table], defaultConfig)).toThrow(
         /not a valid TypeScript identifier.*user-name/,
       );
     });
@@ -103,21 +101,21 @@ describe("generateSchemaTypescript", () => {
           },
         ],
       });
-      expect(() => generateSchemaTypescript([table])).toThrow(
+      expect(() => generateSchemaTypescript([table], defaultConfig)).toThrow(
         /columnNameTransform/,
       );
     });
 
     it("suggests using tableNameTransform in the error message for invalid table names", () => {
       const table = makeTable({ name: "my table" });
-      expect(() => generateSchemaTypescript([table])).toThrow(
+      expect(() => generateSchemaTypescript([table], defaultConfig)).toThrow(
         /tableNameTransform/,
       );
     });
 
     it("succeeds with a custom columnNameTransform that fixes whitespace", () => {
-      setConfig({
-        columnNameTransform: (name) => name.replace(/\s+/g, "_"),
+      const config = populateSchemaGenerationConfig({
+        columnNameTransform: (name: string) => name.replace(/\s+/g, "_"),
       });
       const table = makeTable({
         columns: [
@@ -129,16 +127,16 @@ describe("generateSchemaTypescript", () => {
           },
         ],
       });
-      const result = generateSchemaTypescript([table]);
+      const result = generateSchemaTypescript([table], config);
       expect(result).toContain("first_name");
     });
 
     it("succeeds with a custom tableNameTransform that fixes whitespace", () => {
-      setConfig({
-        tableNameTransform: (name) => name.replace(/\s+/g, "_"),
+      const config = populateSchemaGenerationConfig({
+        tableNameTransform: (name: string) => name.replace(/\s+/g, "_"),
       });
       const table = makeTable({ name: "my table" });
-      const result = generateSchemaTypescript([table]);
+      const result = generateSchemaTypescript([table], config);
       expect(result).toContain("my_table");
     });
 
@@ -154,7 +152,9 @@ describe("generateSchemaTypescript", () => {
           },
         ],
       });
-      expect(() => generateSchemaTypescript([table])).not.toThrow();
+      expect(() =>
+        generateSchemaTypescript([table], defaultConfig),
+      ).not.toThrow();
     });
   });
 });

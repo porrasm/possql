@@ -37,7 +37,7 @@ const wrapNameTransformWithValidation = (
   };
 };
 
-type PopulatedSchemaGenerationConfig = Omit<
+export type PopulatedSchemaGenerationConfig = Omit<
   SchemaGenerationConfig,
   "getZodTypeMap" | "getZodArrayTypeMap" | "getIgnoredTables"
 > & {
@@ -99,18 +99,9 @@ const DEFAULT_SCHEMA_GENERATION_CONFIG: SchemaGenerationConfig = {
   getZodArrayTypeMap: (defaults: Record<string, string>) => defaults,
 };
 
-let populatedSchemaGenerationConfig: PopulatedSchemaGenerationConfig | null =
-  null;
-
-export const config = (): PopulatedSchemaGenerationConfig => {
-  if (populatedSchemaGenerationConfig !== null) {
-    return populatedSchemaGenerationConfig;
-  }
-
-  throw new PiquelError(PiquelErrorCode.CONFIG_NOT_INITIALIZED);
-};
-
-export const setConfig = (config: Partial<SchemaGenerationConfig>): void => {
+export const populateSchemaGenerationConfig = (
+  config: Partial<SchemaGenerationConfig>,
+): PopulatedSchemaGenerationConfig => {
   const ignoredTablesFunc =
     config.getIgnoredTables ??
     DEFAULT_SCHEMA_GENERATION_CONFIG.getIgnoredTables;
@@ -120,7 +111,7 @@ export const setConfig = (config: Partial<SchemaGenerationConfig>): void => {
     config.getZodArrayTypeMap ??
     DEFAULT_SCHEMA_GENERATION_CONFIG.getZodArrayTypeMap;
 
-  populatedSchemaGenerationConfig = {
+  return {
     ...DEFAULT_SCHEMA_GENERATION_CONFIG,
     ...config,
     tableNameTransform: wrapNameTransformWithValidation(

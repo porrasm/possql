@@ -1,4 +1,4 @@
-import { config } from "./schema-generation-config";
+import type { PopulatedSchemaGenerationConfig } from "./schema-generation-config";
 import type { TableToGenerate } from "./table-parser";
 
 const header = `
@@ -8,16 +8,16 @@ const header = `
 import { z } from "zod";
 `.trim();
 
-const schemaHeader = (): string =>
+const schemaHeader = (config: PopulatedSchemaGenerationConfig): string =>
   `
-export const ${config().schemaExportName} = {
+export const ${config.schemaExportName} = {
 `.trim();
 
-const footer = (): string =>
+const footer = (config: PopulatedSchemaGenerationConfig): string =>
   `
 };
 
-type Schemas = typeof ${config().schemaExportName};
+type Schemas = typeof ${config.schemaExportName};
 type RowTypes = {
   [K in keyof Schemas]: Schemas[K]["types"] & {
     notNull: Schemas[K]["notNullTypes"];
@@ -25,77 +25,92 @@ type RowTypes = {
 };
 
 export const rowTypes: RowTypes = Object.fromEntries(
-  Object.entries(${config().schemaExportName}).map(([key, value]) => [
+  Object.entries(${config.schemaExportName}).map(([key, value]) => [
     key,
     { ...value.types, notNull: value.notNullTypes },
   ]),
 ) as unknown as RowTypes;
 `.trim();
 
-const generateTableSchema = (table: TableToGenerate): string => {
-  const transformedTableName = config().tableNameTransform(table.name);
+const generateTableSchema = (
+  table: TableToGenerate,
+  config: PopulatedSchemaGenerationConfig,
+): string => {
+  const transformedTableName = config.tableNameTransform(table.name);
   return `
   ${transformedTableName}: {
     tableName: "${table.name}",
     types: {
-      ${table.columns.map((column) => `${config().columnNameTransform(column.name)}:  ${column.isPrimaryKey ? `${transformedTableName}${config().primaryKeySuffix}Schema` : column.zodType},`).join("\n")}
+      ${table.columns.map((column) => `${config.columnNameTransform(column.name)}:  ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodType},`).join("\n")}
     },
     notNullTypes: {
-      ${table.columns.map((column) => `${config().columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config().primaryKeySuffix}Schema` : column.zodTypeWithoutNullable},`).join("\n")}
+      ${table.columns.map((column) => `${config.columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodTypeWithoutNullable},`).join("\n")}
     },
     validator: z.object({
-      ${table.columns.map((column) => `${config().columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config().primaryKeySuffix}Schema` : column.zodType},`).join("\n")}
+      ${table.columns.map((column) => `${config.columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodType},`).join("\n")}
     }).strict(),
     notNullValidator: z.object({
-      ${table.columns.map((column) => `${config().columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config().primaryKeySuffix}Schema` : column.zodTypeWithoutNullable},`).join("\n")}
+      ${table.columns.map((column) => `${config.columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodTypeWithoutNullable},`).join("\n")}
     }).strict(),
   },
   `.trim();
 };
 
-const generateRowTypeExports = (tables: TableToGenerate[]): string => {
+const generateRowTypeExports = (
+  tables: TableToGenerate[],
+  config: PopulatedSchemaGenerationConfig,
+): string => {
   return `
   ${tables
     .map((table) => {
-      const transformedTableName = config().tableNameTransform(table.name);
+      const transformedTableName = config.tableNameTransform(table.name);
       return `export const ${transformedTableName} = rowTypes.${transformedTableName};`;
     })
     .join("\n")}
   `.trim();
 };
 
-const generateTableId = (table: TableToGenerate): string => {
+const generateTableId = (
+  table: TableToGenerate,
+  config: PopulatedSchemaGenerationConfig,
+): string => {
   const idColumn = table.columns.find((column) => column.isPrimaryKey);
   if (!idColumn) {
     return "";
   }
 
-  const transformedTableName = config().tableNameTransform(table.name);
+  const transformedTableName = config.tableNameTransform(table.name);
   return `
-  export const ${transformedTableName}${config().primaryKeySuffix}Schema = ${idColumn.zodTypeWithoutNullable}.brand<"${transformedTableName}${config().primaryKeySuffix}">();
-  export type ${transformedTableName}${config().primaryKeySuffix} = z.infer<typeof ${transformedTableName}${config().primaryKeySuffix}Schema>;
+  export const ${transformedTableName}${config.primaryKeySuffix}Schema = ${idColumn.zodTypeWithoutNullable}.brand<"${transformedTableName}${config.primaryKeySuffix}">();
+  export type ${transformedTableName}${config.primaryKeySuffix} = z.infer<typeof ${transformedTableName}${config.primaryKeySuffix}Schema>;
   `;
 };
 
-const generateTableTypeExport = (table: TableToGenerate): string => {
-  const transformedTableName = config().tableNameTransform(table.name);
+const generateTableTypeExport = (
+  table: TableToGenerate,
+  config: PopulatedSchemaGenerationConfig,
+): string => {
+  const transformedTableName = config.tableNameTransform(table.name);
   return `
-  export type ${transformedTableName}${config().tableTypeSuffix} = z.infer<typeof ${config().schemaExportName}.${transformedTableName}.validator>;
-  export type ${transformedTableName}${config().tableTypeSuffix}NotNull = z.infer<typeof ${config().schemaExportName}.${transformedTableName}.notNullValidator>;
+  export type ${transformedTableName}${config.tableTypeSuffix} = z.infer<typeof ${config.schemaExportName}.${transformedTableName}.validator>;
+  export type ${transformedTableName}${config.tableTypeSuffix}NotNull = z.infer<typeof ${config.schemaExportName}.${transformedTableName}.notNullValidator>;
   `;
 };
 
-export const generateSchemaTypescript = (tables: TableToGenerate[]): string => {
+export const generateSchemaTypescript = (
+  tables: TableToGenerate[],
+  config: PopulatedSchemaGenerationConfig,
+): string => {
   return `
   ${header}
-  ${tables.map((table) => generateTableId(table)).join("\n")}
-  ${schemaHeader()}
-  ${tables.map((table) => generateTableSchema(table)).join("\n")}
-  ${footer()}
+  ${tables.map((table) => generateTableId(table, config)).join("\n")}
+  ${schemaHeader(config)}
+  ${tables.map((table) => generateTableSchema(table, config)).join("\n")}
+  ${footer(config)}
 
-  ${tables.map((table) => generateTableTypeExport(table)).join("\n")}
+  ${tables.map((table) => generateTableTypeExport(table, config)).join("\n")}
 
-  ${generateRowTypeExports(tables)}
+  ${generateRowTypeExports(tables, config)}
 
   `.trim();
 };
