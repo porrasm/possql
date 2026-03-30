@@ -28,7 +28,8 @@
     "example": "tsx examples/main.ts",
     "example:schema": "RUN_SCHEMA_GEN=true tsx examples/main.ts",
     "prettier:format": "prettier --write src tests examples",
-    "prettier:check": "prettier --check src tests examples"
+    "prettier:check": "prettier --check src tests examples",
+    "checks:all": "npm run prettier:check && npm run lint && npm run typecheck && npm run test && npm run example:schema && npm run example && echo 'All checks passed!'"
   },
   "dependencies": {
     "sql-template-strings": "^2.2.2",
