@@ -13,7 +13,11 @@ export const runUsingTransaction = async <T>(
     await client.query("COMMIT");
     return result;
   } catch (error) {
-    await client.query("ROLLBACK");
+    try {
+      await client.query("ROLLBACK");
+    } catch {
+      // Ignore rollback failures (e.g. dead connection) so we preserve the original error.
+    }
     throw error;
   } finally {
     client.release();

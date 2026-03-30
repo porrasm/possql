@@ -102,6 +102,28 @@ describe("runUsingTransaction", () => {
     expect(calls).not.toContain("COMMIT");
   });
 
+  it("rethrows original error when ROLLBACK fails", async () => {
+    const client = makeClient();
+    const originalError = new Error("boom");
+    const rollbackError = new Error("connection terminated");
+    const fn = vi.fn().mockRejectedValue(originalError);
+
+    client.query.mockImplementation((query: string) => {
+      if (query === "ROLLBACK") {
+        return Promise.reject(rollbackError);
+      }
+      return Promise.resolve({ rows: [] });
+    });
+
+    await expect(runUsingTransaction(client, fn)).rejects.toBe(originalError);
+
+    expect(client.query).toHaveBeenNthCalledWith(1, "BEGIN");
+    expect(client.query).toHaveBeenNthCalledWith(2, "ROLLBACK");
+    const calls = client.query.mock.calls.map((c: unknown[]) => c[0]);
+    expect(calls).not.toContain("COMMIT");
+    expect(client.release).toHaveBeenCalledOnce();
+  });
+
   it("releases the client in finally on success", async () => {
     const client = makeClient();
     await runUsingTransaction(client, vi.fn().mockResolvedValue(null));
