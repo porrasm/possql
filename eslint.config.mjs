@@ -93,5 +93,10 @@ export default defineConfig(
       "no-console": "off",
     },
   },
-  globalIgnores(["dist/", "node_modules/", "examples/generated-schema.ts"]),
+  globalIgnores([
+    "dist/",
+    "node_modules/",
+    "examples/generated-schema.ts",
+    "tests/fixtures/pagila-schema.ts",
+  ]),
 );

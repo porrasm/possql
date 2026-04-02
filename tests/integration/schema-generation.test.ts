@@ -1,10 +1,24 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  beforeAll,
+  afterAll,
+} from "vitest";
 import os from "os";
 import path from "path";
 import fs from "fs";
 import type pg from "pg";
 import { runSchemaGeneration } from "../../src/schema-generation/schema-generator";
-import { setupPublicSchemaTest, resetDb } from "../helpers/db";
+import {
+  setupPublicSchemaTest,
+  resetDb,
+  setupDumpTestDb,
+  teardownDumpTestDb,
+  type DumpTestDb,
+} from "../helpers/db";
 
 let ctx: { pool: pg.Pool };
 
@@ -261,5 +275,45 @@ describe("enum schema generation", () => {
     expect(enumContent).toContain(
       "history: z.array(task_statusSchema).nullable(),",
     );
+  });
+});
+
+describe("pagila schema generation", () => {
+  let pagilaCtx: DumpTestDb;
+
+  beforeAll(async () => {
+    pagilaCtx = await setupDumpTestDb("tests/fixtures/pagila.sql");
+  });
+
+  afterAll(async () => {
+    await teardownDumpTestDb(pagilaCtx);
+  });
+
+  it("matches the predefined pagila schema", async () => {
+    const outputFile = path.join(
+      os.tmpdir(),
+      `pagila-schema-test-${Date.now()}.ts`,
+    );
+    try {
+      await runSchemaGeneration({
+        pool: pagilaCtx.pool,
+        outputTypescriptFile: outputFile,
+        config: {
+          schemaExportName: "pagila_schema",
+          allowUnknownDataTypes: true,
+          columnNameTransform: (name) => name.replace(/ /g, "_"),
+        },
+      });
+      const content = fs.readFileSync(outputFile, "utf8");
+      const expectedContent = fs.readFileSync(
+        "tests/fixtures/pagila-schema.ts",
+        "utf8",
+      );
+      expect(content).toEqual(expectedContent);
+    } finally {
+      if (fs.existsSync(outputFile)) {
+        fs.unlinkSync(outputFile);
+      }
+    }
   });
 });
