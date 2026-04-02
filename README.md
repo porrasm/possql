@@ -24,20 +24,26 @@ const db = createDatabase({
 
 // Create a reusable operation
 const getUserById = createOperation(
-  ({ id }: { id: number }) => sql`SELECT * FROM users WHERE id = ${id}`,
+  ({ userId }: { userId: number }) =>
+    sql`SELECT user_id, name FROM app_user WHERE user_id = ${userId}`,
   z.object({
-    user_id: z.number(),
-    name: z.string(),
+    user_id: schema.app_user.types.user_id,
+    name: schema.app_user.types.name,
   }),
 );
 
 // Use the operation
-const user = await db.client.queryOne(getUserById({ id: 1 }));
+const user = await db.client.queryOne(getUserById({ userId: 1 }));
 
 // Or use the operation inside a transaction
 const updatedUser = await db.transact(async (tx) => {
-  await tx.nonQuery(sql`UPDATE users SET name = ${"John"} WHERE id = ${1}`);
-  return tx.queryOne(getUserById({ id: 1 }));
+  const userId = 1;
+  const userBeforeUpdate = await tx.queryOne(getUserById({ userId }));
+
+  await tx.nonQuery(
+    sql`UPDATE app_user SET name = ${userBeforeUpdate.name.reverse()} WHERE user_id = ${userId}`,
+  );
+  return tx.queryOne(getUserById({ userId }));
 });
 ```
 
