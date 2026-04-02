@@ -82,10 +82,16 @@ await runSchemaGeneration({
 |---|---|---|
 | `format` | `true` | If `true`, tries to format generated output with Prettier. If Prettier is not available, generation still succeeds and formatting is skipped. |
 
+## Views
+
+PostgreSQL views (and materialized views) in the `public` schema are included in the generated output alongside regular tables. However, since views are read-only and may contain computed columns, their validators are generated **without** `.strict()`. This means extra fields are allowed when validating view rows, rather than causing a validation error.
+
+Regular base tables continue to use `.strict()` validators, which reject any fields not defined in the schema.
+
 ## Generated output
 
 The generated file exports:
-- A Zod schema object containing validators for each table
-- Inferred TypeScript types for each table
+- A Zod schema object containing validators for each table and view
+- Inferred TypeScript types for each table and view
 
 Run `npm run example:schema` to see schema generation in action against the pagila example database.

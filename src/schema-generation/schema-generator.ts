@@ -15,6 +15,7 @@ import {
   fetchForeignKeys,
   fetchPrimaryKeys,
   fetchEnumRows,
+  fetchTableTypes,
   groupEnumRows,
 } from "./metadata-queries";
 
@@ -70,12 +71,14 @@ export const runSchemaGeneration = async (
   const foreignKeys = await db.client.query(fetchForeignKeys({}));
   const primaryKeys = await db.client.query(fetchPrimaryKeys({}));
   const enumTypes = groupEnumRows(await db.client.query(fetchEnumRows({})));
+  const tableTypes = await db.client.query(fetchTableTypes({}));
 
   const { tables, enums } = parsePublicSchema({
     rows,
     foreignKeys,
     primaryKeys,
     enumTypes,
+    tableTypes,
     config: schemaGenerationConfig,
   });
   const schemaDefinition = generateSchemaTypescript(

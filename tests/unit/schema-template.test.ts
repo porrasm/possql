@@ -8,6 +8,7 @@ const defaultConfig = populateSchemaGenerationConfig({});
 function makeTable(overrides?: Partial<TableToGenerate>): TableToGenerate {
   return {
     name: "user",
+    isView: false,
     columns: [
       {
         name: "user_id",

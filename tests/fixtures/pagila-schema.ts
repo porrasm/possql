@@ -133,22 +133,18 @@ export const pagila_schema = {
       first_name: z.string(),
       last_name: z.string(),
     },
-    validator: z
-      .object({
-        actor_id: z.number().int().nullable(),
-        film_info: z.string().nullable(),
-        first_name: z.string().nullable(),
-        last_name: z.string().nullable(),
-      })
-      .strict(),
-    notNullValidator: z
-      .object({
-        actor_id: z.number().int(),
-        film_info: z.string(),
-        first_name: z.string(),
-        last_name: z.string(),
-      })
-      .strict(),
+    validator: z.object({
+      actor_id: z.number().int().nullable(),
+      film_info: z.string().nullable(),
+      first_name: z.string().nullable(),
+      last_name: z.string().nullable(),
+    }),
+    notNullValidator: z.object({
+      actor_id: z.number().int(),
+      film_info: z.string(),
+      first_name: z.string(),
+      last_name: z.string(),
+    }),
   },
   address: {
     tableName: "address",
@@ -361,32 +357,28 @@ export const pagila_schema = {
       sid: z.number().int(),
       zip_code: z.string(),
     },
-    validator: z
-      .object({
-        address: z.string().nullable(),
-        city: z.string().nullable(),
-        country: z.string().nullable(),
-        id: z.number().int().nullable(),
-        name: z.string().nullable(),
-        notes: z.string().nullable(),
-        phone: z.string().nullable(),
-        sid: z.number().int().nullable(),
-        zip_code: z.string().nullable(),
-      })
-      .strict(),
-    notNullValidator: z
-      .object({
-        address: z.string(),
-        city: z.string(),
-        country: z.string(),
-        id: z.number().int(),
-        name: z.string(),
-        notes: z.string(),
-        phone: z.string(),
-        sid: z.number().int(),
-        zip_code: z.string(),
-      })
-      .strict(),
+    validator: z.object({
+      address: z.string().nullable(),
+      city: z.string().nullable(),
+      country: z.string().nullable(),
+      id: z.number().int().nullable(),
+      name: z.string().nullable(),
+      notes: z.string().nullable(),
+      phone: z.string().nullable(),
+      sid: z.number().int().nullable(),
+      zip_code: z.string().nullable(),
+    }),
+    notNullValidator: z.object({
+      address: z.string(),
+      city: z.string(),
+      country: z.string(),
+      id: z.number().int(),
+      name: z.string(),
+      notes: z.string(),
+      phone: z.string(),
+      sid: z.number().int(),
+      zip_code: z.string(),
+    }),
   },
   film: {
     tableName: "film",
@@ -535,30 +527,26 @@ export const pagila_schema = {
       rating: mpaa_ratingSchema,
       title: z.string(),
     },
-    validator: z
-      .object({
-        actors: z.string().nullable(),
-        category: z.string().nullable(),
-        description: z.string().nullable(),
-        fid: z.number().int().nullable(),
-        length: z.number().int().nullable(),
-        price: z.number().nullable(),
-        rating: mpaa_ratingSchema.nullable(),
-        title: z.string().nullable(),
-      })
-      .strict(),
-    notNullValidator: z
-      .object({
-        actors: z.string(),
-        category: z.string(),
-        description: z.string(),
-        fid: z.number().int(),
-        length: z.number().int(),
-        price: z.number(),
-        rating: mpaa_ratingSchema,
-        title: z.string(),
-      })
-      .strict(),
+    validator: z.object({
+      actors: z.string().nullable(),
+      category: z.string().nullable(),
+      description: z.string().nullable(),
+      fid: z.number().int().nullable(),
+      length: z.number().int().nullable(),
+      price: z.number().nullable(),
+      rating: mpaa_ratingSchema.nullable(),
+      title: z.string().nullable(),
+    }),
+    notNullValidator: z.object({
+      actors: z.string(),
+      category: z.string(),
+      description: z.string(),
+      fid: z.number().int(),
+      length: z.number().int(),
+      price: z.number(),
+      rating: mpaa_ratingSchema,
+      title: z.string(),
+    }),
   },
   inventory: {
     tableName: "inventory",
@@ -640,30 +628,26 @@ export const pagila_schema = {
       rating: mpaa_ratingSchema,
       title: z.string(),
     },
-    validator: z
-      .object({
-        actors: z.string().nullable(),
-        category: z.string().nullable(),
-        description: z.string().nullable(),
-        fid: z.number().int().nullable(),
-        length: z.number().int().nullable(),
-        price: z.number().nullable(),
-        rating: mpaa_ratingSchema.nullable(),
-        title: z.string().nullable(),
-      })
-      .strict(),
-    notNullValidator: z
-      .object({
-        actors: z.string(),
-        category: z.string(),
-        description: z.string(),
-        fid: z.number().int(),
-        length: z.number().int(),
-        price: z.number(),
-        rating: mpaa_ratingSchema,
-        title: z.string(),
-      })
-      .strict(),
+    validator: z.object({
+      actors: z.string().nullable(),
+      category: z.string().nullable(),
+      description: z.string().nullable(),
+      fid: z.number().int().nullable(),
+      length: z.number().int().nullable(),
+      price: z.number().nullable(),
+      rating: mpaa_ratingSchema.nullable(),
+      title: z.string().nullable(),
+    }),
+    notNullValidator: z.object({
+      actors: z.string(),
+      category: z.string(),
+      description: z.string(),
+      fid: z.number().int(),
+      length: z.number().int(),
+      price: z.number(),
+      rating: mpaa_ratingSchema,
+      title: z.string(),
+    }),
   },
   payment: {
     tableName: "payment",
@@ -1030,18 +1014,14 @@ export const pagila_schema = {
       category: z.string(),
       total_sales: z.number(),
     },
-    validator: z
-      .object({
-        category: z.string().nullable(),
-        total_sales: z.number().nullable(),
-      })
-      .strict(),
-    notNullValidator: z
-      .object({
-        category: z.string(),
-        total_sales: z.number(),
-      })
-      .strict(),
+    validator: z.object({
+      category: z.string().nullable(),
+      total_sales: z.number().nullable(),
+    }),
+    notNullValidator: z.object({
+      category: z.string(),
+      total_sales: z.number(),
+    }),
   },
   sales_by_store: {
     tableName: "sales_by_store",
@@ -1055,20 +1035,16 @@ export const pagila_schema = {
       store: z.string(),
       total_sales: z.number(),
     },
-    validator: z
-      .object({
-        manager: z.string().nullable(),
-        store: z.string().nullable(),
-        total_sales: z.number().nullable(),
-      })
-      .strict(),
-    notNullValidator: z
-      .object({
-        manager: z.string(),
-        store: z.string(),
-        total_sales: z.number(),
-      })
-      .strict(),
+    validator: z.object({
+      manager: z.string().nullable(),
+      store: z.string().nullable(),
+      total_sales: z.number().nullable(),
+    }),
+    notNullValidator: z.object({
+      manager: z.string(),
+      store: z.string(),
+      total_sales: z.number(),
+    }),
   },
   staff: {
     tableName: "staff",
@@ -1151,30 +1127,26 @@ export const pagila_schema = {
       sid: z.number().int(),
       zip_code: z.string(),
     },
-    validator: z
-      .object({
-        address: z.string().nullable(),
-        city: z.string().nullable(),
-        country: z.string().nullable(),
-        id: z.number().int().nullable(),
-        name: z.string().nullable(),
-        phone: z.string().nullable(),
-        sid: z.number().int().nullable(),
-        zip_code: z.string().nullable(),
-      })
-      .strict(),
-    notNullValidator: z
-      .object({
-        address: z.string(),
-        city: z.string(),
-        country: z.string(),
-        id: z.number().int(),
-        name: z.string(),
-        phone: z.string(),
-        sid: z.number().int(),
-        zip_code: z.string(),
-      })
-      .strict(),
+    validator: z.object({
+      address: z.string().nullable(),
+      city: z.string().nullable(),
+      country: z.string().nullable(),
+      id: z.number().int().nullable(),
+      name: z.string().nullable(),
+      phone: z.string().nullable(),
+      sid: z.number().int().nullable(),
+      zip_code: z.string().nullable(),
+    }),
+    notNullValidator: z.object({
+      address: z.string(),
+      city: z.string(),
+      country: z.string(),
+      id: z.number().int(),
+      name: z.string(),
+      phone: z.string(),
+      sid: z.number().int(),
+      zip_code: z.string(),
+    }),
   },
   store: {
     tableName: "store",

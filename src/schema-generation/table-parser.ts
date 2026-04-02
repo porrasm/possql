@@ -2,6 +2,7 @@ import type {
   ForeignKey,
   PrimaryKey,
   PublicSchemaRow,
+  TableTypeRow,
 } from "./metadata-queries";
 import {
   type PopulatedSchemaGenerationConfig,
@@ -18,6 +19,7 @@ export interface ColumnToGenerate {
 
 export interface TableToGenerate {
   name: string;
+  isView: boolean;
   columns: ColumnToGenerate[];
 }
 
@@ -160,15 +162,24 @@ export const parsePublicSchema = ({
   foreignKeys,
   primaryKeys,
   enumTypes,
+  tableTypes,
   config,
 }: {
   rows: PublicSchemaRow[];
   foreignKeys: ForeignKey[];
   primaryKeys: PrimaryKey[];
   enumTypes: EnumType[];
+  tableTypes: TableTypeRow[];
   config: PopulatedSchemaGenerationConfig;
 }): ParsedSchema => {
   const enumMap = new Map(enumTypes.map((e) => [e.name, e]));
+  const viewSet = new Set(
+    tableTypes
+      .filter(
+        (t) => t.table_type === "VIEW" || t.table_type === "MATERIALIZED VIEW",
+      )
+      .map((t) => t.table_name),
+  );
   const primaryKeySet = new Set(
     primaryKeys.map((pk) => `${pk.table_name}.${pk.column_name}`),
   );
@@ -196,6 +207,7 @@ export const parsePublicSchema = ({
 
     const table = tables.get(row.table_name) ?? {
       name: row.table_name,
+      isView: viewSet.has(row.table_name),
       columns: [],
     };
 

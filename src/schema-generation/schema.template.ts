@@ -48,10 +48,10 @@ const generateTableSchema = (
     },
     validator: z.object({
       ${table.columns.map((column) => `${config.columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodType},`).join("\n")}
-    }).strict(),
+    })${table.isView ? "" : ".strict()"},
     notNullValidator: z.object({
       ${table.columns.map((column) => `${config.columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodTypeWithoutNullable},`).join("\n")}
-    }).strict(),
+    })${table.isView ? "" : ".strict()"},
   },
   `.trim();
 };

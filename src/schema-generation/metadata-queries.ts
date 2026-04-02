@@ -30,6 +30,13 @@ const primaryKeyValidator = z.object({
 
 export type PrimaryKey = z.infer<typeof primaryKeyValidator>;
 
+const tableTypeValidator = z.object({
+  table_name: z.string(),
+  table_type: z.string(),
+});
+
+export type TableTypeRow = z.infer<typeof tableTypeValidator>;
+
 const enumRowValidator = z.object({
   typname: z.string(),
   enumlabel: z.string(),
@@ -86,6 +93,11 @@ export const fetchPrimaryKeys = createOperation(
     WHERE tc.constraint_type = 'PRIMARY KEY'
     AND tc.table_schema='public'`,
   primaryKeyValidator,
+);
+
+export const fetchTableTypes = createOperation(
+  sql`SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = 'public'`,
+  tableTypeValidator,
 );
 
 export const fetchEnumRows = createOperation(

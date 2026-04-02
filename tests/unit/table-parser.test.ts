@@ -43,6 +43,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [pk("user", "user_id")],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       expect(tables).toHaveLength(1);
@@ -68,6 +69,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [pk("zebra", "zebra_id"), pk("alpha", "alpha_id")],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       expect(tables[0]?.name).toBe("alpha");
@@ -99,6 +101,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [pk("user", "user_id")],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       const names = tables[0]?.columns.map((c) => c.name);
@@ -122,6 +125,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       const col = tables[0]?.columns[0];
@@ -143,6 +147,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       const col = tables[0]?.columns[0];
@@ -164,6 +169,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       const col = tables[0]?.columns[0];
@@ -200,6 +206,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       const col = tables[0]?.columns[0];
@@ -222,6 +229,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [pk("user", "user_id")],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       expect(tables[0]?.columns[0]?.isPrimaryKey).toBe(true);
@@ -241,6 +249,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [pk("user", "user_id")],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       expect(tables[0]?.columns[0]?.isPrimaryKey).toBe(false);
@@ -266,6 +275,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [pk("migrations", "migrations_id"), pk("user", "user_id")],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       const tableNames = tables.map((t) => t.name);
@@ -298,6 +308,7 @@ describe("parsePublicSchema", () => {
           pk("user", "user_id"),
         ],
         enumTypes: [],
+        tableTypes: [],
         config,
       });
       const tableNames = tables.map((t) => t.name);
@@ -320,6 +331,7 @@ describe("parsePublicSchema", () => {
           foreignKeys: [],
           primaryKeys: [],
           enumTypes: [],
+          tableTypes: [],
           config: defaultConfig,
         }),
       ).toThrow(/no known Zod mapping/);
@@ -344,6 +356,7 @@ describe("parsePublicSchema", () => {
           foreignKeys: [],
           primaryKeys: [],
           enumTypes: [],
+          tableTypes: [],
           config,
         }),
       ).not.toThrow();
@@ -366,6 +379,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config,
       });
       const col = tables[0]?.columns[0];
@@ -390,6 +404,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config,
       });
       const col = tables[0]?.columns[0];
@@ -413,6 +428,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config,
       });
       const col = tables[0]?.columns[0];
@@ -437,6 +453,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config,
       });
       const col = tables[0]?.columns[0];
@@ -461,6 +478,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config,
       });
       const col = tables[0]?.columns[0];
@@ -500,6 +518,7 @@ describe("parsePublicSchema", () => {
         foreignKeys,
         primaryKeys: [pk("user", "user_id"), pk("post", "post_id")],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       const post = tables.find((t) => t.name === "post");
@@ -533,6 +552,7 @@ describe("parsePublicSchema", () => {
         foreignKeys,
         primaryKeys: [pk("post", "post_id")],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       const post = tables.find((t) => t.name === "post");
@@ -567,6 +587,7 @@ describe("parsePublicSchema", () => {
         foreignKeys,
         primaryKeys: [pk("order_items", "order_id")],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       const orders = tables.find((t) => t.name === "orders");
@@ -595,6 +616,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config,
       });
       const col = tables[0]?.columns[0];
@@ -621,6 +643,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config,
       });
       const col = tables[0]?.columns[0];
@@ -645,6 +668,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config,
       });
       const col = tables[0]?.columns[0];
@@ -677,6 +701,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config,
       });
       const settingCol = tables.find((t) => t.name === "setting")?.columns[0];
@@ -704,6 +729,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config,
       });
       const col = tables[0]?.columns[0];
@@ -728,6 +754,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [pk("t", "t_id")],
         enumTypes: [],
+        tableTypes: [],
         config: defaultConfig,
       });
       const col = tables[0]?.columns.find((c) => c.name === "tags");
@@ -754,6 +781,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes,
+        tableTypes: [],
         config: defaultConfig,
       });
       const col = tables[0]?.columns[0];
@@ -779,6 +807,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes,
+        tableTypes: [],
         config: defaultConfig,
       });
       const col = tables[0]?.columns[0];
@@ -812,6 +841,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes,
+        tableTypes: [],
         config: defaultConfig,
       });
       expect(enums).toHaveLength(2);
@@ -834,6 +864,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes,
+        tableTypes: [],
         config: defaultConfig,
       });
       expect(enums).toHaveLength(0);
@@ -855,6 +886,7 @@ describe("parsePublicSchema", () => {
           foreignKeys: [],
           primaryKeys: [],
           enumTypes: [],
+          tableTypes: [],
           config: defaultConfig,
         }),
       ).toThrow(/no known Zod mapping/);
@@ -878,6 +910,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes: [],
+        tableTypes: [],
         config,
       });
       const col = tables[0]?.columns[0];
@@ -902,6 +935,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes,
+        tableTypes: [],
         config: defaultConfig,
       });
       const col = tables[0]?.columns[0];
@@ -927,6 +961,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes,
+        tableTypes: [],
         config: defaultConfig,
       });
       const col = tables[0]?.columns[0];
@@ -952,6 +987,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes,
+        tableTypes: [],
         config: defaultConfig,
       });
       expect(enums).toHaveLength(1);
@@ -980,6 +1016,7 @@ describe("parsePublicSchema", () => {
         foreignKeys: [],
         primaryKeys: [],
         enumTypes,
+        tableTypes: [],
         config,
       });
       const col = tables[0]?.columns[0];
