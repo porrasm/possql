@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { z } from "zod";
 import { sql, type SQLDefinition } from "../src/index";
 import { db } from "./db";
@@ -57,9 +58,9 @@ export const searchFilms = async (filters: {
   let query = sql`SELECT f.* FROM film f`;
 
   if (conditions.length > 0) {
-    let where = conditions[0];
+    let where = conditions[0]!;
     for (let i = 1; i < conditions.length; i++) {
-      where = sql`${where} AND ${conditions[i]}`;
+      where = sql`${where} AND ${conditions[i]!}`;
     }
     query = sql`${query} WHERE ${where}`;
   }
