@@ -64,6 +64,21 @@ export async function setupPublicSchemaTest(
   sqlFile: string,
 ): Promise<{ pool: pg.Pool }> {
   const pool = new pg.Pool({ connectionString: TEST_DATABASE_URL });
+
+  // Clean any leftover public-schema state from other test runs
+  const tableRes = await pool.query(
+    `SELECT tablename FROM pg_tables WHERE schemaname = 'public'`,
+  );
+  for (const row of tableRes.rows as { tablename: string }[]) {
+    await pool.query(`DROP TABLE IF EXISTS "${row.tablename}" CASCADE`);
+  }
+  const enumRes = await pool.query(
+    `SELECT t.typname FROM pg_type t JOIN pg_namespace n ON t.typnamespace = n.oid WHERE n.nspname = 'public' AND t.typtype = 'e'`,
+  );
+  for (const row of enumRes.rows as { typname: string }[]) {
+    await pool.query(`DROP TYPE IF EXISTS "${row.typname}" CASCADE`);
+  }
+
   const sqlContent = fs.readFileSync(path.resolve(sqlFile), "utf8");
   await pool.query(sqlContent);
   return { pool };

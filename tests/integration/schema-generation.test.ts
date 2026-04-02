@@ -215,3 +215,51 @@ describe("runSchemaGeneration", () => {
     }
   });
 });
+
+describe("enum schema generation", () => {
+  let enumContent: string;
+
+  beforeEach(async () => {
+    await resetDb(ctx);
+    ctx = await setupPublicSchemaTest("tests/fixtures/enum-schema.sql");
+
+    const outputFile = path.join(os.tmpdir(), `enum-test-${Date.now()}.ts`);
+    await runSchemaGeneration({
+      pool: ctx.pool,
+      outputTypescriptFile: outputFile,
+      format: false,
+    });
+    enumContent = fs.readFileSync(outputFile, "utf8");
+    fs.unlinkSync(outputFile);
+  });
+
+  it("generates z.enum schemas for PostgreSQL enum types", () => {
+    expect(enumContent).toContain('z.enum(["pending", "in_progress", "done"])');
+    expect(enumContent).toContain(
+      'z.enum(["info", "warning", "error", "fatal"])',
+    );
+  });
+
+  it("generates enum schema type exports", () => {
+    expect(enumContent).toContain("export const task_statusSchema");
+    expect(enumContent).toContain("export type task_status");
+    expect(enumContent).toContain("export const severitySchema");
+    expect(enumContent).toContain("export type severity");
+  });
+
+  it("references enum schema for scalar enum columns", () => {
+    // NOT NULL enum column
+    expect(enumContent).toContain("status: task_statusSchema,");
+    // nullable enum column
+    expect(enumContent).toContain("severity: severitySchema.nullable(),");
+  });
+
+  it("generates z.array wrapper for enum array columns", () => {
+    // NOT NULL enum array column
+    expect(enumContent).toContain("tags: z.array(severitySchema),");
+    // nullable enum array column
+    expect(enumContent).toContain(
+      "history: z.array(task_statusSchema).nullable(),",
+    );
+  });
+});

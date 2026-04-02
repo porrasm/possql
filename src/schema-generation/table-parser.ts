@@ -28,18 +28,46 @@ export interface EnumType {
 
 const USER_DEFINED_DATA_TYPE = "USER-DEFINED";
 
+/** PostgreSQL prefixes array udt_names with an underscore (e.g. `_status_enum`). */
+const enumNameFromArrayUdtName = (udtName: string): string =>
+  udtName.replace(/^_/, "");
+
+const getArrayZodType = ({
+  row,
+  enumMap,
+  config,
+}: {
+  row: PublicSchemaRow;
+  enumMap: Map<string, EnumType>;
+  config: PopulatedSchemaGenerationConfig;
+}): string | null => {
+  const arrayType = config.zodArrayTypeMap[row.udt_name];
+  if (arrayType) {
+    return arrayType;
+  }
+  const enumType = enumMap.get(enumNameFromArrayUdtName(row.udt_name));
+  if (enumType) {
+    return `z.array(${enumType.name}Schema)`;
+  }
+  return null;
+};
+
 /**
  * Returns the automatically generated Zod type for a column.
  * Automatically handles array and enum types.
  */
-const getZodType = (
-  row: PublicSchemaRow,
-  enumMap: Map<string, EnumType>,
-  config: PopulatedSchemaGenerationConfig,
-): string | null => {
+const getZodType = ({
+  row,
+  enumMap,
+  config,
+}: {
+  row: PublicSchemaRow;
+  enumMap: Map<string, EnumType>;
+  config: PopulatedSchemaGenerationConfig;
+}): string | null => {
   // Array type information does not contain the element type
   if (row.data_type === config.arrayDataTypeName) {
-    return config.zodArrayTypeMap[row.udt_name] ?? null;
+    return getArrayZodType({ row, enumMap, config });
   }
   // Enum types show up as USER-DEFINED with udt_name matching the enum name
   if (row.data_type === USER_DEFINED_DATA_TYPE) {
@@ -63,7 +91,7 @@ const parseColumn = ({
   config: PopulatedSchemaGenerationConfig;
 }): ColumnToGenerate => {
   const zodType =
-    config.overrideZodType(row) ?? getZodType(row, enumMap, config);
+    config.overrideZodType(row) ?? getZodType({ row, enumMap, config });
 
   if (!zodType && config.allowUnknownDataTypes) {
     return {
@@ -100,16 +128,24 @@ const getUsedEnums = ({
   rows,
   enumMap,
   enumTypes,
+  config,
 }: {
   rows: PublicSchemaRow[];
   enumMap: Map<string, EnumType>;
   enumTypes: EnumType[];
+  config: PopulatedSchemaGenerationConfig;
 }): EnumType[] => {
   // Only include enums that are actually used by columns in the schema
   const usedEnumNames = new Set<string>();
   for (const row of rows) {
     if (row.data_type === USER_DEFINED_DATA_TYPE && enumMap.has(row.udt_name)) {
       usedEnumNames.add(row.udt_name);
+    }
+    if (row.data_type === config.arrayDataTypeName) {
+      const enumName = enumNameFromArrayUdtName(row.udt_name);
+      if (enumMap.has(enumName)) {
+        usedEnumNames.add(enumName);
+      }
     }
   }
   const usedEnums = enumTypes
@@ -192,6 +228,6 @@ export const parsePublicSchema = ({
     tables: Array.from(tables.values()).sort((a, b) =>
       a.name.localeCompare(b.name),
     ),
-    enums: getUsedEnums({ rows, enumMap, enumTypes }),
+    enums: getUsedEnums({ rows, enumMap, enumTypes, config }),
   };
 };

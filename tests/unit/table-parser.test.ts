@@ -850,6 +850,80 @@ describe("parsePublicSchema", () => {
       expect(col.zodType).toBe("z.any()");
     });
 
+    it("maps enum array columns to z.array(enumSchema)", () => {
+      const rows: PublicSchemaRow[] = [
+        makeRow({
+          table_name: "t",
+          column_name: "statuses",
+          data_type: "ARRAY",
+          udt_name: "_status_enum",
+          is_nullable: "NO",
+        }),
+      ];
+      const enumTypes = [
+        { name: "status_enum", labels: ["active", "inactive"] },
+      ];
+      const { tables } = parsePublicSchema({
+        rows,
+        foreignKeys: [],
+        primaryKeys: [],
+        enumTypes,
+        config: defaultConfig,
+      });
+      const col = tables[0]?.columns[0];
+      expect(col.zodType).toBe("z.array(status_enumSchema)");
+      expect(col.zodTypeWithoutNullable).toBe("z.array(status_enumSchema)");
+    });
+
+    it("appends .nullable() for nullable enum array columns", () => {
+      const rows: PublicSchemaRow[] = [
+        makeRow({
+          table_name: "t",
+          column_name: "statuses",
+          data_type: "ARRAY",
+          udt_name: "_status_enum",
+          is_nullable: "YES",
+        }),
+      ];
+      const enumTypes = [
+        { name: "status_enum", labels: ["active", "inactive"] },
+      ];
+      const { tables } = parsePublicSchema({
+        rows,
+        foreignKeys: [],
+        primaryKeys: [],
+        enumTypes,
+        config: defaultConfig,
+      });
+      const col = tables[0]?.columns[0];
+      expect(col.zodType).toBe("z.array(status_enumSchema).nullable()");
+      expect(col.zodTypeWithoutNullable).toBe("z.array(status_enumSchema)");
+    });
+
+    it("includes enum in used enums when only referenced via array column", () => {
+      const rows: PublicSchemaRow[] = [
+        makeRow({
+          table_name: "t",
+          column_name: "statuses",
+          data_type: "ARRAY",
+          udt_name: "_status_enum",
+          is_nullable: "NO",
+        }),
+      ];
+      const enumTypes = [
+        { name: "status_enum", labels: ["active", "inactive"] },
+      ];
+      const { enums } = parsePublicSchema({
+        rows,
+        foreignKeys: [],
+        primaryKeys: [],
+        enumTypes,
+        config: defaultConfig,
+      });
+      expect(enums).toHaveLength(1);
+      expect(enums[0]?.name).toBe("status_enum");
+    });
+
     it("overrideZodType takes precedence over enum mapping", () => {
       const config = populateSchemaGenerationConfig({
         overrideZodType: (col) =>
