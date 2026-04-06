@@ -2,6 +2,13 @@ import { type PoolClientLike } from "./external-types";
 import type { SQLDefinition } from "./types";
 import { PiquelError, PiquelErrorCode } from "../errors";
 import sqlTemplateStrings from "sql-template-strings";
+import { AsyncLocalStorage } from "async_hooks";
+
+const transactionClientStorage = new AsyncLocalStorage<PoolClientLike>();
+
+export const getTransactionClient = (): PoolClientLike | undefined => {
+  return transactionClientStorage.getStore();
+};
 
 export const runUsingTransaction = async <T>(
   client: PoolClientLike,
@@ -22,6 +29,21 @@ export const runUsingTransaction = async <T>(
   } finally {
     client.release();
   }
+};
+
+export const runUsingContextTransaction = async <T>(
+  getClient: () => Promise<PoolClientLike>,
+  fn: () => Promise<T>,
+): Promise<T> => {
+  const existingTransactionClient = transactionClientStorage.getStore();
+  if (existingTransactionClient) {
+    return fn();
+  }
+
+  const newTransactionClient = await getClient();
+  return transactionClientStorage.run(newTransactionClient, () =>
+    runUsingTransaction(newTransactionClient, fn),
+  );
 };
 
 interface RunSqlParams {

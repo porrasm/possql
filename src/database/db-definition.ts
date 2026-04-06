@@ -1,4 +1,9 @@
-import { runSqlStatement, runUsingTransaction } from "./query-logic";
+import {
+  getTransactionClient,
+  runSqlStatement,
+  runUsingContextTransaction,
+  runUsingTransaction,
+} from "./query-logic";
 import { prepareOperation } from "./operations";
 import type { DBClient, DbConfig } from "./types";
 import type { PoolLike, PoolClientLike } from "./external-types";
@@ -53,10 +58,18 @@ function createPoolConnect(
   };
 }
 
+/**
+ * Creates a client resolver that checks AsyncLocalStorage for an ambient
+ * transaction client at query time. Falls back to the pool when none exists.
+ */
 function createGetClient(
   poolConnect: () => Promise<PoolClientLike>,
 ): () => Promise<ResolvedClient> {
   return async () => {
+    const ambientClient = getTransactionClient();
+    if (ambientClient) {
+      return { client: ambientClient, releaseAfterQuery: false };
+    }
     return { client: await poolConnect(), releaseAfterQuery: true };
   };
 }
@@ -156,9 +169,16 @@ const createTransact =
     return runUsingTransaction(client, () => op(opClient));
   };
 
+const createContextTransact =
+  (poolConnect: () => Promise<PoolClientLike>) =>
+  async <T>(op: () => Promise<T>): Promise<T> => {
+    return runUsingContextTransaction(poolConnect, op);
+  };
+
 export interface Database {
   client: DBClient;
   transact: ReturnType<typeof createTransact>;
+  contextTransact: ReturnType<typeof createContextTransact>;
   pool: PoolLike;
 }
 
@@ -183,6 +203,7 @@ export const createDatabase = (config: DbConfig): Database => {
   return {
     client: queryClient,
     transact: createTransact(poolConnect, config.useZodValidation),
+    contextTransact: createContextTransact(poolConnect),
     pool: config.pool,
   };
 };
