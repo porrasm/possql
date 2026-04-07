@@ -233,7 +233,10 @@ describe("nestedContextTransactionStrategy", () => {
       );
     });
 
-    const rows = await db.db.client.query(sql`SELECT * FROM users ORDER BY user_id`, userSchema);
+    const rows = await db.db.client.query(
+      sql`SELECT * FROM users ORDER BY user_id`,
+      userSchema,
+    );
     // Bob and Dave committed; Carol rolled back by the inner transaction
     expect(rows).toHaveLength(2);
     expect(rows.map((r) => r.name)).toEqual(["Bob", "Dave"]);
@@ -265,7 +268,10 @@ describe("nestedContextTransactionStrategy", () => {
       );
     });
 
-    const rows = await db.db.client.query(sql`SELECT * FROM users ORDER BY user_id`, userSchema);
+    const rows = await db.db.client.query(
+      sql`SELECT * FROM users ORDER BY user_id`,
+      userSchema,
+    );
     // All three on the same transaction — all committed
     expect(rows).toHaveLength(3);
     expect(rows.map((r) => r.name)).toEqual(["Bob", "Carol", "Dave"]);
@@ -354,7 +360,10 @@ describe("mixTransactionTypesStrategy", () => {
       );
     });
 
-    const rows = await db.db.client.query(sql`SELECT * FROM users ORDER BY user_id`, userSchema);
+    const rows = await db.db.client.query(
+      sql`SELECT * FROM users ORDER BY user_id`,
+      userSchema,
+    );
     // Bob and Dave committed; Carol rolled back by the inner transact
     expect(rows).toHaveLength(2);
     expect(rows.map((r) => r.name)).toEqual(["Bob", "Dave"]);
