@@ -25,6 +25,12 @@ export enum PiquelErrorCode {
 
   /** Acquiring a connection from the pool exceeded `connectionTimeoutMs`. */
   CONNECTION_TIMEOUT = "CONNECTION_TIMEOUT",
+
+  /** A context transaction was started while another was already active. */
+  NESTED_CONTEXT_TRANSACTION = "NESTED_CONTEXT_TRANSACTION",
+
+  /** Cannot mix transact and contextTransact — a different transaction type is already active. */
+  MIXED_TRANSACTION_TYPES = "MIXED_TRANSACTION_TYPES",
 }
 
 /** Human-readable descriptions for each error code. */
@@ -45,6 +51,10 @@ export const piquelErrorDescriptions: Record<PiquelErrorCode, string> = {
     "A column data type has no known Zod mapping",
   [PiquelErrorCode.CONNECTION_TIMEOUT]:
     "Timed out while waiting for a connection from the pool",
+  [PiquelErrorCode.NESTED_CONTEXT_TRANSACTION]:
+    "A context transaction was started while another was already active",
+  [PiquelErrorCode.MIXED_TRANSACTION_TYPES]:
+    "Cannot mix transact and contextTransact — a different transaction type is already active",
 };
 
 /** Custom error class for all Piquel errors. */

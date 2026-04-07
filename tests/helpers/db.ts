@@ -20,6 +20,8 @@ export async function setupTestDb(
   sqlFile: string,
   params?: {
     useZodValidation?: boolean;
+    nestedContextTransactionStrategy?: "disallow" | "start-new" | "reuse";
+    mixTransactionTypesStrategy?: "disallow" | "allow";
   },
 ): Promise<TestDb> {
   const suffix = Math.random().toString(36).slice(2, 8);
@@ -55,6 +57,8 @@ export async function setupTestDb(
   const db = createDatabase({
     pool,
     useZodValidation: params?.useZodValidation ?? true,
+    nestedContextTransactionStrategy: params?.nestedContextTransactionStrategy,
+    mixTransactionTypesStrategy: params?.mixTransactionTypesStrategy,
   });
 
   return { db, pool, adminPool, schemaName };

@@ -81,4 +81,17 @@ export interface DbConfig {
    * Omit or set to `0` or less for no limit (default — same as passing only a pool).
    */
   connectionTimeoutMs?: number;
+  /**
+   * Determines how nested context transactions are handled. Defaults to "disallow".
+   * - "disallow": throw an error if a nested context transaction is started
+   * - "start-new": start a new transaction for the nested context transaction
+   * - "reuse": join the nested context transaction with the outer transaction, effectively doing nothing
+   */
+  nestedContextTransactionStrategy?: "disallow" | "start-new" | "reuse";
+  /**
+   * Determines if starting a transaction inside a context transaction is allowed or vice versa. Defaults to "disallow".
+   * - "disallow": throw an error if a transaction type is mixed
+   * - "allow": allow mixing transaction types
+   */
+  mixTransactionTypesStrategy?: "disallow" | "allow";
 }

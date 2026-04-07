@@ -4,19 +4,45 @@ import { PiquelError, PiquelErrorCode } from "../errors";
 import sqlTemplateStrings from "sql-template-strings";
 import { AsyncLocalStorage } from "async_hooks";
 
-const transactionClientStorage = new AsyncLocalStorage<PoolClientLike>();
+interface TransactionContext {
+  client: PoolClientLike;
+  type: "context" | "explicit";
+}
+
+const transactionStorage = new AsyncLocalStorage<TransactionContext>();
+
+export const getTransactionContext = (): TransactionContext | undefined => {
+  return transactionStorage.getStore();
+};
 
 export const getTransactionClient = (): PoolClientLike | undefined => {
-  return transactionClientStorage.getStore();
+  return transactionStorage.getStore()?.client;
+};
+
+export const checkMixedTransactionTypes = (
+  strategy: "disallow" | "allow",
+  callerType: "context" | "explicit",
+): void => {
+  if (strategy === "allow") {
+    return;
+  }
+  const existing = getTransactionContext();
+  if (existing && existing.type !== callerType) {
+    throw new PiquelError(PiquelErrorCode.MIXED_TRANSACTION_TYPES);
+  }
 };
 
 export const runUsingTransaction = async <T>(
   client: PoolClientLike,
   fn: () => Promise<T>,
+  storeInContext?: boolean,
 ): Promise<T> => {
+  const wrappedFn = storeInContext
+    ? () => transactionStorage.run({ client, type: "explicit" }, fn)
+    : fn;
   try {
     await client.query("BEGIN");
-    const result = await fn();
+    const result = await wrappedFn();
     await client.query("COMMIT");
     return result;
   } catch (error) {
@@ -34,15 +60,23 @@ export const runUsingTransaction = async <T>(
 export const runUsingContextTransaction = async <T>(
   getClient: () => Promise<PoolClientLike>,
   fn: () => Promise<T>,
+  nestedStrategy: "disallow" | "start-new" | "reuse",
 ): Promise<T> => {
-  const existingTransactionClient = transactionClientStorage.getStore();
-  if (existingTransactionClient) {
-    return fn();
+  const existingCtx = getTransactionContext();
+  if (existingCtx) {
+    switch (nestedStrategy) {
+      case "disallow":
+        throw new PiquelError(PiquelErrorCode.NESTED_CONTEXT_TRANSACTION);
+      case "reuse":
+        return fn();
+      case "start-new":
+        break; // fall through to acquire new client
+    }
   }
 
-  const newTransactionClient = await getClient();
-  return transactionClientStorage.run(newTransactionClient, () =>
-    runUsingTransaction(newTransactionClient, fn),
+  const newClient = await getClient();
+  return transactionStorage.run({ client: newClient, type: "context" }, () =>
+    runUsingTransaction(newClient, fn),
   );
 };
 

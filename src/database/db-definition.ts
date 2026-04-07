@@ -1,4 +1,5 @@
 import {
+  checkMixedTransactionTypes,
   getTransactionClient,
   runSqlStatement,
   runUsingContextTransaction,
@@ -144,8 +145,13 @@ const createNonQuery =
   };
 
 const createTransact =
-  (poolConnect: () => Promise<PoolClientLike>, useZodValidation: boolean) =>
+  (
+    poolConnect: () => Promise<PoolClientLike>,
+    useZodValidation: boolean,
+    mixStrategy: "disallow" | "allow",
+  ) =>
   async <T>(op: (client: DBClient) => Promise<T>): Promise<T> => {
+    checkMixedTransactionTypes(mixStrategy, "explicit");
     const client = await poolConnect();
 
     const txGetClient = (): Promise<ResolvedClient> =>
@@ -166,13 +172,18 @@ const createTransact =
       }),
     };
 
-    return runUsingTransaction(client, () => op(opClient));
+    return runUsingTransaction(client, () => op(opClient), true);
   };
 
 const createContextTransact =
-  (poolConnect: () => Promise<PoolClientLike>) =>
+  (
+    poolConnect: () => Promise<PoolClientLike>,
+    nestedStrategy: "disallow" | "start-new" | "reuse",
+    mixStrategy: "disallow" | "allow",
+  ) =>
   async <T>(op: () => Promise<T>): Promise<T> => {
-    return runUsingContextTransaction(poolConnect, op);
+    checkMixedTransactionTypes(mixStrategy, "context");
+    return runUsingContextTransaction(poolConnect, op, nestedStrategy);
   };
 
 export interface Database {
@@ -188,6 +199,9 @@ export const createDatabase = (config: DbConfig): Database => {
     config.connectionTimeoutMs,
   );
 
+  const nestedStrategy = config.nestedContextTransactionStrategy ?? "disallow";
+  const mixStrategy = config.mixTransactionTypesStrategy ?? "disallow";
+
   const queryParams: QueryParams = {
     getClient: createGetClient(poolConnect),
     useZodValidation: config.useZodValidation,
@@ -202,8 +216,12 @@ export const createDatabase = (config: DbConfig): Database => {
 
   return {
     client: queryClient,
-    transact: createTransact(poolConnect, config.useZodValidation),
-    contextTransact: createContextTransact(poolConnect),
+    transact: createTransact(poolConnect, config.useZodValidation, mixStrategy),
+    contextTransact: createContextTransact(
+      poolConnect,
+      nestedStrategy,
+      mixStrategy,
+    ),
     pool: config.pool,
   };
 };

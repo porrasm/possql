@@ -74,3 +74,13 @@ const rows = await db.client.query(sql`SELECT now()`);
 All errors thrown by Piquel are instances of `PiquelError`, which carries a `code` property (`PiquelErrorCode`) for programmatic handling. See [`src/errors.ts`](../src/errors.ts) for the full list of error codes.
 
 See the [pagila example](../examples/) for a runnable demo of all query methods.
+
+## `DbConfig` reference
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `pool` | `PoolLike` | _(required)_ | The connection pool. |
+| `useZodValidation` | `boolean` | _(required)_ | When `true`, query results are validated against the provided Zod schema at runtime. |
+| `connectionTimeoutMs` | `number` | none | Maximum milliseconds to wait for a connection from the pool. Throws `CONNECTION_TIMEOUT` if exceeded. Omit or set to `0` for no limit. |
+| `nestedContextTransactionStrategy` | `"disallow" \| "reuse" \| "start-new"` | `"disallow"` | What to do when `contextTransact` is called while a context transaction is already active. See [Transactions](./transactions.md#nestedcontexttransactionstrategy). |
+| `mixTransactionTypesStrategy` | `"disallow" \| "allow"` | `"disallow"` | What to do when `transact` and `contextTransact` are nested inside each other. See [Transactions](./transactions.md#mixtransactiontypesstrategy). |
