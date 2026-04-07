@@ -1,79 +1,18 @@
+import { checkMixedTransactionTypes } from "./transaction-context";
 import {
-  checkMixedTransactionTypes,
-  getTransactionClient,
-  runSqlStatement,
-  runUsingContextTransaction,
-  runUsingTransaction,
-} from "./query-logic";
+  runExplicitTransaction,
+  runContextTransaction,
+} from "./transaction-runner";
+import { runSqlStatement } from "./sql-executor";
 import { prepareOperation } from "./operations";
 import type { DBClient, DbConfig } from "./types";
-import type { PoolLike, PoolClientLike } from "./external-types";
+import type { PoolLike } from "./external-types";
 import { PiquelError, PiquelErrorCode } from "../errors";
-
-interface ResolvedClient {
-  client: PoolClientLike;
-  releaseAfterQuery: boolean;
-}
-
-/** Always acquires a fresh client from the pool (with optional timeout). */
-function createPoolConnect(
-  pool: PoolLike,
-  connectionTimeoutMs: number | undefined,
-): () => Promise<PoolClientLike> {
-  if (connectionTimeoutMs === undefined || connectionTimeoutMs <= 0) {
-    return () => pool.connect();
-  }
-
-  const timeoutMs = connectionTimeoutMs;
-  const timeoutDetail = `Exceeded ${timeoutMs.toString()}ms`;
-
-  return async () => {
-    let didTimeout = false;
-    const connectPromise = pool.connect();
-    void connectPromise.then(
-      (client) => {
-        if (didTimeout) {
-          client.release();
-        }
-      },
-      () => undefined,
-    );
-
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      timeoutId = setTimeout(() => {
-        didTimeout = true;
-        reject(
-          new PiquelError(PiquelErrorCode.CONNECTION_TIMEOUT, timeoutDetail),
-        );
-      }, timeoutMs);
-    });
-
-    try {
-      return await Promise.race([connectPromise, timeoutPromise]);
-    } finally {
-      if (timeoutId !== undefined) {
-        clearTimeout(timeoutId);
-      }
-    }
-  };
-}
-
-/**
- * Creates a client resolver that checks AsyncLocalStorage for an ambient
- * transaction client at query time. Falls back to the pool when none exists.
- */
-function createGetClient(
-  poolConnect: () => Promise<PoolClientLike>,
-): () => Promise<ResolvedClient> {
-  return async () => {
-    const ambientClient = getTransactionClient();
-    if (ambientClient) {
-      return { client: ambientClient, releaseAfterQuery: false };
-    }
-    return { client: await poolConnect(), releaseAfterQuery: true };
-  };
-}
+import {
+  createGetClient,
+  createPoolConnect,
+  type ResolvedClient,
+} from "./db-client";
 
 interface QueryParams {
   getClient: () => Promise<ResolvedClient>;
@@ -144,52 +83,19 @@ const createNonQuery =
     });
   };
 
-const createTransact =
-  (
-    poolConnect: () => Promise<PoolClientLike>,
-    useZodValidation: boolean,
-    mixStrategy: "disallow" | "allow",
-  ) =>
-  async <T>(op: (client: DBClient) => Promise<T>): Promise<T> => {
-    checkMixedTransactionTypes(mixStrategy, "explicit");
-    const client = await poolConnect();
-
-    const txGetClient = (): Promise<ResolvedClient> =>
-      Promise.resolve({ client, releaseAfterQuery: false });
-
-    const txQueryParams: QueryParams = {
-      getClient: txGetClient,
-      useZodValidation,
-    };
-
-    const opClient: DBClient = {
-      query: createQuery(txQueryParams),
-      queryOneOrNone: createQueryOneOrNone(txQueryParams),
-      queryOne: createQueryOne(txQueryParams),
-      nonQuery: createNonQuery({
-        ...txQueryParams,
-        useZodValidation: false,
-      }),
-    };
-
-    return runUsingTransaction(client, () => op(opClient), true);
+const createDBClient = (params: QueryParams): DBClient => {
+  return {
+    query: createQuery(params),
+    queryOneOrNone: createQueryOneOrNone(params),
+    queryOne: createQueryOne(params),
+    nonQuery: createNonQuery(params),
   };
-
-const createContextTransact =
-  (
-    poolConnect: () => Promise<PoolClientLike>,
-    nestedStrategy: "disallow" | "start-new" | "reuse",
-    mixStrategy: "disallow" | "allow",
-  ) =>
-  async <T>(op: () => Promise<T>): Promise<T> => {
-    checkMixedTransactionTypes(mixStrategy, "context");
-    return runUsingContextTransaction(poolConnect, op, nestedStrategy);
-  };
+};
 
 export interface Database {
   client: DBClient;
-  transact: ReturnType<typeof createTransact>;
-  contextTransact: ReturnType<typeof createContextTransact>;
+  transact: <T>(op: (client: DBClient) => Promise<T>) => Promise<T>;
+  contextTransact: <T>(op: () => Promise<T>) => Promise<T>;
   pool: PoolLike;
 }
 
@@ -202,26 +108,32 @@ export const createDatabase = (config: DbConfig): Database => {
   const nestedStrategy = config.nestedContextTransactionStrategy ?? "disallow";
   const mixStrategy = config.mixTransactionTypesStrategy ?? "disallow";
 
-  const queryParams: QueryParams = {
+  const queryClient = createDBClient({
     getClient: createGetClient(poolConnect),
     useZodValidation: config.useZodValidation,
+  });
+
+  const transact = async <T>(
+    op: (client: DBClient) => Promise<T>,
+  ): Promise<T> => {
+    checkMixedTransactionTypes(mixStrategy, "explicit");
+    const client = await poolConnect();
+    const txClient = createDBClient({
+      getClient: () => Promise.resolve({ client, releaseAfterQuery: false }),
+      useZodValidation: config.useZodValidation,
+    });
+    return runExplicitTransaction(client, () => op(txClient));
   };
 
-  const queryClient: DBClient = {
-    query: createQuery(queryParams),
-    queryOneOrNone: createQueryOneOrNone(queryParams),
-    queryOne: createQueryOne(queryParams),
-    nonQuery: createNonQuery(queryParams),
+  const contextTransact = async <T>(op: () => Promise<T>): Promise<T> => {
+    checkMixedTransactionTypes(mixStrategy, "context");
+    return runContextTransaction(poolConnect, op, nestedStrategy);
   };
 
   return {
     client: queryClient,
-    transact: createTransact(poolConnect, config.useZodValidation, mixStrategy),
-    contextTransact: createContextTransact(
-      poolConnect,
-      nestedStrategy,
-      mixStrategy,
-    ),
+    transact,
+    contextTransact,
     pool: config.pool,
   };
 };

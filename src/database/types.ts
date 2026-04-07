@@ -70,6 +70,15 @@ export interface DBClient {
   nonQuery: <Args>(...args: QueryParams<Args, void>) => Promise<void>;
 }
 
+export type TransactionType = "context" | "explicit";
+
+export type NestedContextTransactionStrategy =
+  | "disallow"
+  | "start-new"
+  | "reuse";
+
+export type MixTransactionTypesStrategy = "disallow" | "allow";
+
 export interface DbConfig {
   pool: PoolLike;
   /** If true, the database query result will be validated using zod.
@@ -87,11 +96,11 @@ export interface DbConfig {
    * - "start-new": start a new transaction for the nested context transaction
    * - "reuse": join the nested context transaction with the outer transaction, effectively doing nothing
    */
-  nestedContextTransactionStrategy?: "disallow" | "start-new" | "reuse";
+  nestedContextTransactionStrategy?: NestedContextTransactionStrategy;
   /**
    * Determines if starting a transaction inside a context transaction is allowed or vice versa. Defaults to "disallow".
    * - "disallow": throw an error if a transaction type is mixed
    * - "allow": allow mixing transaction types
    */
-  mixTransactionTypesStrategy?: "disallow" | "allow";
+  mixTransactionTypesStrategy?: MixTransactionTypesStrategy;
 }
