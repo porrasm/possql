@@ -2,6 +2,7 @@
 
 <p align="center">
 <a href="https://github.com/porrasm/piquel/actions/workflows/ci.yml"><img src="https://github.com/porrasm/piquel/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status" /></a>
+<a href="https://codecov.io/gh/porrasm/piquel"><img src="https://codecov.io/gh/porrasm/piquel/branch/main/graph/badge.svg" alt="Coverage" /></a>
 <a href="https://www.npmjs.com/package/piquel"><img src="https://img.shields.io/npm/v/piquel" alt="npm" /></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/porrasm/piquel" alt="License" /></a>
 <a href="https://github.com/porrasm/piquel"><img src="https://img.shields.io/github/stars/porrasm/piquel" alt="GitHub stars" /></a>
