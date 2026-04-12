@@ -3,6 +3,7 @@ import { PiquelError, PiquelErrorCode } from "../errors";
 
 export const UNKNOWN_DATA_TYPE_ZOD_TYPE = "z.any()";
 
+/** Options for customizing generated schema output. */
 export interface SchemaGenerationConfig {
   schemaExportName: string;
   primaryKeySuffix: string;

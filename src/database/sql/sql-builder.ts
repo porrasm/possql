@@ -204,7 +204,7 @@ export const sqlUnchecked = (
   return sql(templateQuery, ...sqlParameters.map(paramToUnsafeParam));
 };
 
-/** Creates a SQL definition from a template query and SQL parameters. */
+/** Tagged template function for building parameterized SQL definitions. */
 export const sql = (
   templateQueryRaw: TemplateStringsArray,
   ...sqlParametersRaw: (SqlParameter | UnsafeParam)[]

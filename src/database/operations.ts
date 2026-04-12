@@ -14,6 +14,7 @@ interface OperationParams<R> {
 
 type SQLOrPreparer<Args> = SQLPreparer<Args> | SQLDefinition;
 
+/** Creates a reusable operation that pairs SQL preparation with a Zod validator. */
 export const createOperation = <Args, T>(
   sql: SQLOrPreparer<Args>,
   validator: DBValidator<T>,

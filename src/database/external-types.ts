@@ -13,6 +13,7 @@ export interface PoolClientLike {
   release: () => void;
   query: (sql: string | SQLStatementLike) => Promise<QueryResultLike>;
 }
+/** Minimal pool interface that {@link createDatabase} accepts. */
 export interface PoolLike {
   connect: () => Promise<PoolClientLike>;
 }

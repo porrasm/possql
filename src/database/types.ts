@@ -7,9 +7,11 @@ import type {
 import type { PoolLike } from "./external-types";
 
 export type TemplateQuery = z.infer<typeof templateQuerySchema>;
+/** Internal SQL representation consumed by the query runner. */
 export type SQLDefinition = z.infer<typeof sqlDefinitionSchema>;
 export type SqlParameter = z.infer<typeof sqlParameterSchema>;
 
+/** Zod validator type used to validate query results. */
 export type DBValidator<T> = z.ZodType<T>;
 
 export type SQLPreparer<Args> = (args: Args) => SQLDefinition;
@@ -20,10 +22,12 @@ export interface PreparedOperation<Args, R> {
   prepareSql: SQLPreparer<Args>;
 }
 
+/** Function type that builds prepared operations from input arguments. */
 export type OperationBuilder<Args, R> = (
   args: Args,
 ) => PreparedOperation<Args, R>;
 
+/** Infers the row result type from an {@link OperationBuilder}. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type OperationResult<T extends OperationBuilder<any, unknown>> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,6 +38,7 @@ export type QueryParams<Args, R> =
   | [SQLDefinition, DBValidator<R>]
   | [PreparedOperation<Args, R>];
 
+/** Query client interface used by normal and transaction contexts. */
 export interface DBClient {
   /**
    * Runs the query and returns all rows as an array. An empty result set yields
@@ -79,6 +84,7 @@ export type NestedContextTransactionStrategy =
 
 export type MixTransactionTypesStrategy = "disallow" | "allow";
 
+/** Configuration options for {@link createDatabase}. */
 export interface DbConfig {
   pool: PoolLike;
   /** If true, the database query result will be validated using zod.

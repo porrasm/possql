@@ -92,6 +92,7 @@ const createDBClient = (params: QueryParams): DBClient => {
   };
 };
 
+/** Runtime database instance returned by {@link createDatabase}. */
 export interface Database {
   client: DBClient;
   transact: <T>(op: (client: DBClient) => Promise<T>) => Promise<T>;
@@ -99,6 +100,7 @@ export interface Database {
   pool: PoolLike;
 }
 
+/** Creates a database facade with query client and transaction helper. */
 export const createDatabase = (config: DbConfig): Database => {
   const poolConnect = createPoolConnect(
     config.pool,

@@ -53,6 +53,7 @@ const dbHealthCheck = async (db: Database): Promise<void> => {
   }
 };
 
+/** Generates Zod/TypeScript schema artifacts from a PostgreSQL database. */
 export const runSchemaGeneration = async (
   params: SchemaGenerationParams,
 ): Promise<void> => {
