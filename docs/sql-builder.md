@@ -53,6 +53,34 @@ Standard and unsafe params can be mixed freely in the same template:
 sql`UPDATE t SET a = ${standardValue}, b = ${unsafeParam(customValue)}`;
 ```
 
+## `sqlUnchecked` — validation-free `sql` for entire files
+
+If your codebase frequently uses custom driver types and per-parameter `unsafeParam` wrapping would be too noisy, use `sqlUnchecked`. It behaves identically to `sql` but skips type validation for every interpolated value — no wrapping needed at call sites.
+
+```ts
+import { sqlUnchecked } from "piquel";
+
+const result = sqlUnchecked`INSERT INTO locations (pos) VALUES (${myCustomPoint})`;
+```
+
+### Using `sqlUnchecked` as the project default
+
+The recommended pattern is to re-export `sqlUnchecked` as `sql` from a single project-local module, then import from that module instead of directly from `"piquel"`:
+
+```ts
+// src/db/sql.ts
+export { sqlUnchecked as sql } from "piquel";
+```
+
+```ts
+// src/services/user.ts
+import { sql } from "../db/sql"; // picks up the unchecked variant
+
+const query = sql`SELECT * FROM users WHERE id = ${myCustomId}`;
+```
+
+This keeps call sites clean while confining the bypass to one re-export. If only a handful of parameters need to bypass validation, prefer the targeted `unsafeParam` wrapper with the standard `sql` instead.
+
 ## Nested composition
 
 `sql` fragments can be embedded inside other `sql` fragments. When a parameter is itself a `SQLDefinition`, the builder inlines its template parts and re-numbers the parameters automatically:

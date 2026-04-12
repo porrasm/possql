@@ -162,6 +162,48 @@ const generateSqlDefinition = (
   return combineQueryAndParameters(templateQuery, sqlParameters);
 };
 
+const paramToUnsafeParam = (param: unknown): UnsafeParam => {
+  if (isUnsafeParam(param)) {
+    return param;
+  }
+  return unsafeParam(param);
+};
+
+/**
+ * Variant of {@link sql} that skips runtime parameter type validation entirely.
+ *
+ * Every interpolated value is treated as if it were wrapped with
+ * {@link unsafeParam}: Piquel's type whitelist is not checked, but values are
+ * still passed to the driver as bound parameters (`$1`, `$2`, …) — never
+ * concatenated into the SQL string. There is no SQL injection risk.
+ *
+ * Use this when your codebase frequently passes custom driver types and
+ * per-parameter `unsafeParam` wrapping would be too noisy. The recommended
+ * pattern is to re-export it as `sql` from a project-local module so that all
+ * query files pick it up automatically:
+ *
+ * ```ts
+ * // src/db/sql.ts
+ * export { sqlUnchecked as sql } from "piquel";
+ * ```
+ *
+ * Then import from your local module instead of directly from `"piquel"`:
+ *
+ * ```ts
+ * import { sql } from "../db/sql";
+ * const query = sql`SELECT * FROM t WHERE id = ${myCustomId}`;
+ * ```
+ *
+ * If only a few parameters need to bypass validation, prefer the targeted
+ * {@link unsafeParam} wrapper with the standard {@link sql} instead.
+ */
+export const sqlUnchecked = (
+  templateQuery: TemplateStringsArray,
+  ...sqlParameters: unknown[]
+): SQLDefinition => {
+  return sql(templateQuery, ...sqlParameters.map(paramToUnsafeParam));
+};
+
 /** Creates a SQL definition from a template query and SQL parameters. */
 export const sql = (
   templateQueryRaw: TemplateStringsArray,

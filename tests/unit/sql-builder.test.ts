@@ -3,6 +3,7 @@ import { describe, it, expect } from "vitest";
 import {
   combineQueryAndParameters,
   sql,
+  sqlUnchecked,
   unsafeParam,
 } from "../../src/database/sql/sql-builder";
 import type { SQLDefinition } from "../../src/database/types";
@@ -207,6 +208,43 @@ describe("sql builder", () => {
       expect(result.sqlParameters).toHaveLength(2);
       expect(result.sqlParameters[0]).toBe(42);
       expect(result.sqlParameters[1]).toBe(obj);
+    });
+  });
+
+  describe("sqlUnchecked", () => {
+    it("accepts a custom class instance without wrapping", () => {
+      class Custom {
+        public x = 1;
+      }
+      const obj = new Custom();
+      const result = sqlUnchecked`SELECT ${obj}`;
+      expect(result.sqlParameters[0]).toBe(obj);
+    });
+
+    it("accepts a function without validation", () => {
+      const fn = () => "noop";
+      const result = sqlUnchecked`SELECT ${fn}`;
+      expect(result.sqlParameters[0]).toBe(fn);
+    });
+
+    it("does not double-wrap an already-wrapped UnsafeParam", () => {
+      class Custom {}
+      const obj = new Custom();
+      const wrapped = unsafeParam(obj);
+      const result = sqlUnchecked`SELECT ${wrapped}`;
+      // The stored value should be the original object, not the UnsafeParam wrapper
+      expect(result.sqlParameters[0]).toBe(obj);
+    });
+
+    it("stores standard types as-is", () => {
+      const result = sqlUnchecked`SELECT ${42}, ${"hello"}, ${true}`;
+      expect(result.sqlParameters).toEqual([42, "hello", true]);
+    });
+
+    it("produces correct template parts and parameter count", () => {
+      const result = sqlUnchecked`SELECT ${1}, ${2}`;
+      expect(result.templateSqlQuery).toHaveLength(3);
+      expect(result.sqlParameters).toHaveLength(2);
     });
   });
 });

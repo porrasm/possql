@@ -17,6 +17,24 @@ export type { PoolLike, PoolClientLike } from "./database/external-types";
 export { sql } from "./database/sql/sql-builder";
 
 /**
+ * Variant of {@link sql} that skips runtime parameter type validation for
+ * every interpolated value. Values are still passed as bound parameters — not
+ * interpolated into the SQL string — so there is no SQL injection risk.
+ *
+ * Intended for codebases that frequently pass custom driver types. Re-export
+ * it as `sql` from a project-local module to use it as the default everywhere:
+ *
+ * ```ts
+ * // src/db/sql.ts
+ * export { sqlUnchecked as sql } from "piquel";
+ * ```
+ *
+ * For selective bypassing, prefer {@link unsafeParam} with the standard
+ * {@link sql} instead.
+ */
+export { sqlUnchecked } from "./database/sql/sql-builder";
+
+/**
  * Wraps a value to bypass `sql`'s runtime parameter type validation for a
  * single parameter. The value is still sent as a bound parameter — not
  * interpolated into the SQL string — so there is no SQL injection risk.
