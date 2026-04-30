@@ -37,23 +37,22 @@ const generateTableSchema = (
   config: PopulatedSchemaGenerationConfig,
 ): string => {
   const transformedTableName = config.tableNameTransform(table.name);
-  return `
-  ${transformedTableName}: {
+  return `  ${transformedTableName}: {
     tableName: "${table.name}",
     types: {
-      ${table.columns.map((column) => `${config.columnNameTransform(column.name)}:  ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodType},`).join("\n")}
+      ${table.columns.map((column) => `${config.columnNameTransform(column.name)}:  ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodType},`).join("\n      ")}
     },
     notNullTypes: {
-      ${table.columns.map((column) => `${config.columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodTypeWithoutNullable},`).join("\n")}
+      ${table.columns.map((column) => `${config.columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodTypeWithoutNullable},`).join("\n      ")}
     },
     validator: z.object({
-      ${table.columns.map((column) => `${config.columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodType},`).join("\n")}
+      ${table.columns.map((column) => `${config.columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodType},`).join("\n      ")}
     })${table.isView ? "" : ".strict()"},
     notNullValidator: z.object({
-      ${table.columns.map((column) => `${config.columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodTypeWithoutNullable},`).join("\n")}
+      ${table.columns.map((column) => `${config.columnNameTransform(column.name)}: ${column.isPrimaryKey ? `${transformedTableName}${config.primaryKeySuffix}Schema` : column.zodTypeWithoutNullable},`).join("\n      ")}
     })${table.isView ? "" : ".strict()"},
   },
-  `.trim();
+  `.trimEnd();
 };
 
 const generateRowTypeExports = (
@@ -81,9 +80,9 @@ const generateTableId = (
 
   const transformedTableName = config.tableNameTransform(table.name);
   return `
-  export const ${transformedTableName}${config.primaryKeySuffix}Schema = ${idColumn.zodTypeWithoutNullable}.brand<"${transformedTableName}${config.primaryKeySuffix}">();
-  export type ${transformedTableName}${config.primaryKeySuffix} = z.infer<typeof ${transformedTableName}${config.primaryKeySuffix}Schema>;
-  `;
+export const ${transformedTableName}${config.primaryKeySuffix}Schema = ${idColumn.zodTypeWithoutNullable}.brand<"${transformedTableName}${config.primaryKeySuffix}">();
+export type ${transformedTableName}${config.primaryKeySuffix} = z.infer<typeof ${transformedTableName}${config.primaryKeySuffix}Schema>;
+`.trim();
 };
 
 const generateTableTypeExport = (
@@ -92,9 +91,9 @@ const generateTableTypeExport = (
 ): string => {
   const transformedTableName = config.tableNameTransform(table.name);
   return `
-  export type ${transformedTableName}${config.tableTypeSuffix} = z.infer<typeof ${config.schemaExportName}.${transformedTableName}.validator>;
-  export type ${transformedTableName}${config.tableTypeSuffix}NotNull = z.infer<typeof ${config.schemaExportName}.${transformedTableName}.notNullValidator>;
-  `;
+export type ${transformedTableName}${config.tableTypeSuffix} = z.infer<typeof ${config.schemaExportName}.${transformedTableName}.validator>;
+export type ${transformedTableName}${config.tableTypeSuffix}NotNull = z.infer<typeof ${config.schemaExportName}.${transformedTableName}.notNullValidator>;
+  `.trim();
 };
 
 const generateEnumSchema = (enumType: EnumType): string => {
@@ -111,16 +110,17 @@ export const generateSchemaTypescript = (
   config: PopulatedSchemaGenerationConfig,
 ): string => {
   return `
-  ${header}
-  ${enums.map((e) => generateEnumSchema(e)).join("\n")}
-  ${tables.map((table) => generateTableId(table, config)).join("\n")}
-  ${schemaHeader(config)}
-  ${tables.map((table) => generateTableSchema(table, config)).join("\n")}
-  ${footer(config)}
+${header}
+${enums.map((e) => generateEnumSchema(e)).join("\n")}
+${tables.map((table) => generateTableId(table, config)).join("\n")}
 
-  ${tables.map((table) => generateTableTypeExport(table, config)).join("\n")}
+${schemaHeader(config)}
+${tables.map((table) => generateTableSchema(table, config)).join("\n")}
+${footer(config)}
 
-  ${generateRowTypeExports(tables, config)}
+${tables.map((table) => generateTableTypeExport(table, config)).join("\n")}
+
+${generateRowTypeExports(tables, config)}
 
   `.trim();
 };
