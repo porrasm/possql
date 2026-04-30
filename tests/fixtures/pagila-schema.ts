@@ -11,73 +11,58 @@ export type actor_id = z.infer<typeof actor_idSchema>;
 
 export const address_idSchema = z.number().int().brand<"address_id">();
 export type address_id = z.infer<typeof address_idSchema>;
-
 export const category_idSchema = z.number().int().brand<"category_id">();
 export type category_id = z.infer<typeof category_idSchema>;
-
 export const city_idSchema = z.number().int().brand<"city_id">();
 export type city_id = z.infer<typeof city_idSchema>;
-
 export const country_idSchema = z.number().int().brand<"country_id">();
 export type country_id = z.infer<typeof country_idSchema>;
-
 export const customer_idSchema = z.number().int().brand<"customer_id">();
 export type customer_id = z.infer<typeof customer_idSchema>;
 
 export const film_idSchema = z.number().int().brand<"film_id">();
 export type film_id = z.infer<typeof film_idSchema>;
-
 export const film_actor_idSchema = actor_idSchema.brand<"film_actor_id">();
 export type film_actor_id = z.infer<typeof film_actor_idSchema>;
-
 export const film_category_idSchema =
   category_idSchema.brand<"film_category_id">();
 export type film_category_id = z.infer<typeof film_category_idSchema>;
 
 export const inventory_idSchema = z.number().int().brand<"inventory_id">();
 export type inventory_id = z.infer<typeof inventory_idSchema>;
-
 export const language_idSchema = z.number().int().brand<"language_id">();
 export type language_id = z.infer<typeof language_idSchema>;
 
 export const payment_idSchema = z.date().brand<"payment_id">();
 export type payment_id = z.infer<typeof payment_idSchema>;
-
 export const payment_p2022_01_idSchema = z
   .date()
   .brand<"payment_p2022_01_id">();
 export type payment_p2022_01_id = z.infer<typeof payment_p2022_01_idSchema>;
-
 export const payment_p2022_02_idSchema = z
   .date()
   .brand<"payment_p2022_02_id">();
 export type payment_p2022_02_id = z.infer<typeof payment_p2022_02_idSchema>;
-
 export const payment_p2022_03_idSchema = z
   .date()
   .brand<"payment_p2022_03_id">();
 export type payment_p2022_03_id = z.infer<typeof payment_p2022_03_idSchema>;
-
 export const payment_p2022_04_idSchema = z
   .date()
   .brand<"payment_p2022_04_id">();
 export type payment_p2022_04_id = z.infer<typeof payment_p2022_04_idSchema>;
-
 export const payment_p2022_05_idSchema = z
   .date()
   .brand<"payment_p2022_05_id">();
 export type payment_p2022_05_id = z.infer<typeof payment_p2022_05_idSchema>;
-
 export const payment_p2022_06_idSchema = z
   .date()
   .brand<"payment_p2022_06_id">();
 export type payment_p2022_06_id = z.infer<typeof payment_p2022_06_idSchema>;
-
 export const payment_p2022_07_idSchema = z
   .date()
   .brand<"payment_p2022_07_id">();
 export type payment_p2022_07_id = z.infer<typeof payment_p2022_07_idSchema>;
-
 export const rental_idSchema = z.number().int().brand<"rental_id">();
 export type rental_id = z.infer<typeof rental_idSchema>;
 
@@ -1199,166 +1184,138 @@ export type actorType = z.infer<typeof pagila_schema.actor.validator>;
 export type actorTypeNotNull = z.infer<
   typeof pagila_schema.actor.notNullValidator
 >;
-
 export type actor_infoType = z.infer<typeof pagila_schema.actor_info.validator>;
 export type actor_infoTypeNotNull = z.infer<
   typeof pagila_schema.actor_info.notNullValidator
 >;
-
 export type addressType = z.infer<typeof pagila_schema.address.validator>;
 export type addressTypeNotNull = z.infer<
   typeof pagila_schema.address.notNullValidator
 >;
-
 export type categoryType = z.infer<typeof pagila_schema.category.validator>;
 export type categoryTypeNotNull = z.infer<
   typeof pagila_schema.category.notNullValidator
 >;
-
 export type cityType = z.infer<typeof pagila_schema.city.validator>;
 export type cityTypeNotNull = z.infer<
   typeof pagila_schema.city.notNullValidator
 >;
-
 export type countryType = z.infer<typeof pagila_schema.country.validator>;
 export type countryTypeNotNull = z.infer<
   typeof pagila_schema.country.notNullValidator
 >;
-
 export type customerType = z.infer<typeof pagila_schema.customer.validator>;
 export type customerTypeNotNull = z.infer<
   typeof pagila_schema.customer.notNullValidator
 >;
-
 export type customer_listType = z.infer<
   typeof pagila_schema.customer_list.validator
 >;
 export type customer_listTypeNotNull = z.infer<
   typeof pagila_schema.customer_list.notNullValidator
 >;
-
 export type filmType = z.infer<typeof pagila_schema.film.validator>;
 export type filmTypeNotNull = z.infer<
   typeof pagila_schema.film.notNullValidator
 >;
-
 export type film_actorType = z.infer<typeof pagila_schema.film_actor.validator>;
 export type film_actorTypeNotNull = z.infer<
   typeof pagila_schema.film_actor.notNullValidator
 >;
-
 export type film_categoryType = z.infer<
   typeof pagila_schema.film_category.validator
 >;
 export type film_categoryTypeNotNull = z.infer<
   typeof pagila_schema.film_category.notNullValidator
 >;
-
 export type film_listType = z.infer<typeof pagila_schema.film_list.validator>;
 export type film_listTypeNotNull = z.infer<
   typeof pagila_schema.film_list.notNullValidator
 >;
-
 export type inventoryType = z.infer<typeof pagila_schema.inventory.validator>;
 export type inventoryTypeNotNull = z.infer<
   typeof pagila_schema.inventory.notNullValidator
 >;
-
 export type languageType = z.infer<typeof pagila_schema.language.validator>;
 export type languageTypeNotNull = z.infer<
   typeof pagila_schema.language.notNullValidator
 >;
-
 export type nicer_but_slower_film_listType = z.infer<
   typeof pagila_schema.nicer_but_slower_film_list.validator
 >;
 export type nicer_but_slower_film_listTypeNotNull = z.infer<
   typeof pagila_schema.nicer_but_slower_film_list.notNullValidator
 >;
-
 export type paymentType = z.infer<typeof pagila_schema.payment.validator>;
 export type paymentTypeNotNull = z.infer<
   typeof pagila_schema.payment.notNullValidator
 >;
-
 export type payment_p2022_01Type = z.infer<
   typeof pagila_schema.payment_p2022_01.validator
 >;
 export type payment_p2022_01TypeNotNull = z.infer<
   typeof pagila_schema.payment_p2022_01.notNullValidator
 >;
-
 export type payment_p2022_02Type = z.infer<
   typeof pagila_schema.payment_p2022_02.validator
 >;
 export type payment_p2022_02TypeNotNull = z.infer<
   typeof pagila_schema.payment_p2022_02.notNullValidator
 >;
-
 export type payment_p2022_03Type = z.infer<
   typeof pagila_schema.payment_p2022_03.validator
 >;
 export type payment_p2022_03TypeNotNull = z.infer<
   typeof pagila_schema.payment_p2022_03.notNullValidator
 >;
-
 export type payment_p2022_04Type = z.infer<
   typeof pagila_schema.payment_p2022_04.validator
 >;
 export type payment_p2022_04TypeNotNull = z.infer<
   typeof pagila_schema.payment_p2022_04.notNullValidator
 >;
-
 export type payment_p2022_05Type = z.infer<
   typeof pagila_schema.payment_p2022_05.validator
 >;
 export type payment_p2022_05TypeNotNull = z.infer<
   typeof pagila_schema.payment_p2022_05.notNullValidator
 >;
-
 export type payment_p2022_06Type = z.infer<
   typeof pagila_schema.payment_p2022_06.validator
 >;
 export type payment_p2022_06TypeNotNull = z.infer<
   typeof pagila_schema.payment_p2022_06.notNullValidator
 >;
-
 export type payment_p2022_07Type = z.infer<
   typeof pagila_schema.payment_p2022_07.validator
 >;
 export type payment_p2022_07TypeNotNull = z.infer<
   typeof pagila_schema.payment_p2022_07.notNullValidator
 >;
-
 export type rentalType = z.infer<typeof pagila_schema.rental.validator>;
 export type rentalTypeNotNull = z.infer<
   typeof pagila_schema.rental.notNullValidator
 >;
-
 export type sales_by_film_categoryType = z.infer<
   typeof pagila_schema.sales_by_film_category.validator
 >;
 export type sales_by_film_categoryTypeNotNull = z.infer<
   typeof pagila_schema.sales_by_film_category.notNullValidator
 >;
-
 export type sales_by_storeType = z.infer<
   typeof pagila_schema.sales_by_store.validator
 >;
 export type sales_by_storeTypeNotNull = z.infer<
   typeof pagila_schema.sales_by_store.notNullValidator
 >;
-
 export type staffType = z.infer<typeof pagila_schema.staff.validator>;
 export type staffTypeNotNull = z.infer<
   typeof pagila_schema.staff.notNullValidator
 >;
-
 export type staff_listType = z.infer<typeof pagila_schema.staff_list.validator>;
 export type staff_listTypeNotNull = z.infer<
   typeof pagila_schema.staff_list.notNullValidator
 >;
-
 export type storeType = z.infer<typeof pagila_schema.store.validator>;
 export type storeTypeNotNull = z.infer<
   typeof pagila_schema.store.notNullValidator

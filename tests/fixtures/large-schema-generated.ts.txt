@@ -16,40 +16,28 @@ export type priority_level = z.infer<typeof priority_levelSchema>;
 
 export const article_idSchema = z.number().int().brand<"article_id">();
 export type article_id = z.infer<typeof article_idSchema>;
-
 export const article_tag_idSchema = z.number().int().brand<"article_tag_id">();
 export type article_tag_id = z.infer<typeof article_tag_idSchema>;
-
 export const big_number_idSchema = z.string().brand<"big_number_id">();
 export type big_number_id = z.infer<typeof big_number_idSchema>;
-
 export const category_idSchema = z.number().int().brand<"category_id">();
 export type category_id = z.infer<typeof category_idSchema>;
-
 export const event_idSchema = z.number().int().brand<"event_id">();
 export type event_id = z.infer<typeof event_idSchema>;
-
 export const file_idSchema = z.string().uuid().brand<"file_id">();
 export type file_id = z.infer<typeof file_idSchema>;
-
 export const int_array_idSchema = z.number().int().brand<"int_array_id">();
 export type int_array_id = z.infer<typeof int_array_idSchema>;
-
 export const location_idSchema = z.number().int().brand<"location_id">();
 export type location_id = z.infer<typeof location_idSchema>;
-
 export const product_idSchema = z.number().int().brand<"product_id">();
 export type product_id = z.infer<typeof product_idSchema>;
-
 export const profile_idSchema = z.number().int().brand<"profile_id">();
 export type profile_id = z.infer<typeof profile_idSchema>;
-
 export const setting_idSchema = z.number().int().brand<"setting_id">();
 export type setting_id = z.infer<typeof setting_idSchema>;
-
 export const tag_idSchema = z.number().int().brand<"tag_id">();
 export type tag_id = z.infer<typeof tag_idSchema>;
-
 export const text_array_idSchema = z.number().int().brand<"text_array_id">();
 export type text_array_id = z.infer<typeof text_array_idSchema>;
 
@@ -481,56 +469,44 @@ export type articleType = z.infer<typeof schema.article.validator>;
 export type articleTypeNotNull = z.infer<
   typeof schema.article.notNullValidator
 >;
-
 export type article_tagType = z.infer<typeof schema.article_tag.validator>;
 export type article_tagTypeNotNull = z.infer<
   typeof schema.article_tag.notNullValidator
 >;
-
 export type big_numberType = z.infer<typeof schema.big_number.validator>;
 export type big_numberTypeNotNull = z.infer<
   typeof schema.big_number.notNullValidator
 >;
-
 export type categoryType = z.infer<typeof schema.category.validator>;
 export type categoryTypeNotNull = z.infer<
   typeof schema.category.notNullValidator
 >;
-
 export type eventType = z.infer<typeof schema.event.validator>;
 export type eventTypeNotNull = z.infer<typeof schema.event.notNullValidator>;
-
 export type fileType = z.infer<typeof schema.file.validator>;
 export type fileTypeNotNull = z.infer<typeof schema.file.notNullValidator>;
-
 export type int_arrayType = z.infer<typeof schema.int_array.validator>;
 export type int_arrayTypeNotNull = z.infer<
   typeof schema.int_array.notNullValidator
 >;
-
 export type locationType = z.infer<typeof schema.location.validator>;
 export type locationTypeNotNull = z.infer<
   typeof schema.location.notNullValidator
 >;
-
 export type productType = z.infer<typeof schema.product.validator>;
 export type productTypeNotNull = z.infer<
   typeof schema.product.notNullValidator
 >;
-
 export type profileType = z.infer<typeof schema.profile.validator>;
 export type profileTypeNotNull = z.infer<
   typeof schema.profile.notNullValidator
 >;
-
 export type settingType = z.infer<typeof schema.setting.validator>;
 export type settingTypeNotNull = z.infer<
   typeof schema.setting.notNullValidator
 >;
-
 export type tagType = z.infer<typeof schema.tag.validator>;
 export type tagTypeNotNull = z.infer<typeof schema.tag.notNullValidator>;
-
 export type text_arrayType = z.infer<typeof schema.text_array.validator>;
 export type text_arrayTypeNotNull = z.infer<
   typeof schema.text_array.notNullValidator
